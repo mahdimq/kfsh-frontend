@@ -1,0 +1,43 @@
+1. homepage should show welcome screen with login with user id
+2. once empoyee logged in, token generated, stored in session
+3. shows employee that's logged and options for that user (either search for patient
+or enter new patient data)
+4. depending on option (new procedure, check procedure, other) selected by
+employee (in this case, new procedure) - show mrn form! If patient exists, move
+on to the procedure form, else move to add new patient form.
+5. Once complete, show new procedure form. once complete, back to home page, or
+patient report (procedures done for that patient).
+
+
+// IF USER IS ADMIN (STRICT ADMIN)
+1. once admin has logged in, admin will have access to add/modify location
+add/modify physician, regular users
+
+
+code to retreive 2 digit year in javascript
+console.log(new Date().getFullYear().toString().substr(-2));
+
+
+employee            menu
+
+patient info name
+dob
+etc
+
+
+table
+
+proc num   test  description         dept      date         test
+21-001     EEG   awake/asleep etc    ICU       04/20/2021
+20-467     EEG   awake/asleep etc    ICU       05/13/2020
+20-468     NCS   awake/asleep etc    ICU       05/13/2020    qty: 4/5 Nerves
+20-088     EEG   awake/asleep etc    ICU       02/03/2020    qty: AWAKE/SLEEP
+20-089     IOM   awake/asleep etc    ICU       02/03/2020    MEP-1,SSEP-3,EMG
+
+add new procedure
+
+Main procedure => IOM
+  test      qty
+dropdown  dropdown
+SSEP         5
+MEP          2

@@ -5,6 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 import userContext from './userContext';
 import PatientInfo from './components/PatientInfo';
 import Procedures from './components/Procedures';
+import Header from './components/Header';
 
 function App() {
 	const [user, setUser] = useState(null);
@@ -12,14 +13,15 @@ function App() {
 	return (
 		<div className='App'>
 			<BrowserRouter>
-				<userContext.Provider value={{ user, setUser }}>
-					<header className='App-header'>
-						KFSH NEUROPHYSIOLOGY DATABASE
-						{/* <Login /> */}
-						{/* <PatientInfo /> */}
-						<Procedures />
-					</header>
-				</userContext.Provider>
+				{/* <userContext.Provider value={{ user, setUser }}> */}
+				<header className='App-header'>
+					{/* <Header /> */}
+					KFSH NEUROPHYSIOLOGY DATABASE
+					{/* <Login /> */}
+					{/* <PatientInfo /> */}
+					<Procedures />
+				</header>
+				{/* </userContext.Provider> */}
 			</BrowserRouter>
 		</div>
 	);

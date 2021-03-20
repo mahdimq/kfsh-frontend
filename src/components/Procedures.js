@@ -26,13 +26,13 @@ const Procedures = () => {
 				}, 400);
 			}}>
 			<Form>
-				<label htmlFor='logNum'>Log Number</label>
-				<Field name='logNum' />
-				<ErrorMessage name='logNum' />
+				<label htmlFor='logNum'>Log Number (auto pop)</label>
+				{/* <Field name='logNum' />
+				<ErrorMessage name='logNum' /> */}
 
-				<label htmlFor='pedLogNum'>Ped Log Number</label>
-				<Field name='pedLogNum' />
-				<ErrorMessage name='pedLogNum' />
+				<label htmlFor='pedLogNum'>Ped Log Number (auto pop)</label>
+				{/* <Field name='pedLogNum' />
+				<ErrorMessage name='pedLogNum' /> */}
 
 				<label htmlFor='cpt'>CPT Code</label>
 				<Field name='cpt' />
