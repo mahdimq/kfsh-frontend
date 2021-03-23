@@ -6,18 +6,16 @@ const Procedures = () => {
 	return (
 		<Formik
 			initialValues={{
-				logNum: '',
-				pedLogNum: '',
-				cpt: '',
 				procedureName: '',
-				procedureDesc: ''
+				procedureDesc: '',
+				date: '',
+				status: ''
 			}}
 			validationSchema={Yup.object({
-				logNum: Yup.mixed().required(),
-				pedLogNum: Yup.mixed(),
-				cpt: Yup.mixed().required('Required'),
 				procedureName: Yup.string().required('Required'),
-				procedureDesc: Yup.string().required('Required')
+				procedureDesc: Yup.mixed().required('Required'),
+				date: Yup.date().required('Required'),
+				status: Yup.string().required('Required')
 			})}
 			onSubmit={(values, { setSubmitting }) => {
 				setTimeout(() => {
@@ -26,28 +24,42 @@ const Procedures = () => {
 				}, 400);
 			}}>
 			<Form>
-				<label htmlFor='logNum'>Log Number (auto pop)</label>
-				{/* <Field name='logNum' />
-				<ErrorMessage name='logNum' /> */}
-
-				<label htmlFor='pedLogNum'>Ped Log Number (auto pop)</label>
-				{/* <Field name='pedLogNum' />
-				<ErrorMessage name='pedLogNum' /> */}
-
-				<label htmlFor='cpt'>CPT Code</label>
-				<Field name='cpt' />
-				<ErrorMessage name='cpt' />
-
 				<label htmlFor='procedureName'>Procedure</label>
-				<Field name='procedureName' type='text' />
+				<Field name='procedureName' as='select'>
+					<option value=''>Enter Procedure..</option>
+					<option value='eeg'>EEG</option>
+					<option value='ltm'>LTM</option>
+					<option value='iom'>IOM</option>
+					<option value='vep'>VEP</option>
+					<option value='baep'>BAEP</option>
+					<option value='emg'>EMG</option>
+					<option value='ncs'>NCS</option>
+				</Field>
 				<ErrorMessage name='procedureName' />
 
-				<label htmlFor='procedureDesc'>Description</label>
+				<label htmlFor='procedureDesc'>CPT Code</label>
 				<Field name='procedureDesc' as='select'>
-					<option value=''>Enter Description..</option>
-					<option value='male'>Awake & Drowsy</option>
-					<option value='female'>Awake & Asleep</option>
+					<option value=''>Enter CPT/Procedure..</option>
+					<option value='91816'>91816 - Awake and Drowsy EEG</option>
+					<option value='93746'>93746 - Upper SSEP</option>
+					<option value='62374'>62374 - Pattern Reversal VEP</option>
+					<option value='21343'>21343 - Clinical BAEP</option>
+					<option value='69821'>69821 - Upper and Lower MEP</option>
 				</Field>
+				<ErrorMessage name='procedureDesc' />
+
+				<label htmlFor='date'>Date Performed</label>
+				<Field name='date' type='date' />
+				<ErrorMessage name='date' />
+
+				<label htmlFor='status'>Status</label>
+				<Field name='status' as='select'>
+					<option value=''>Enter Status..</option>
+					<option value='complete'>Complete</option>
+					<option value='no-show'>No Show</option>
+					<option value='rescheduled'>Rescheduled</option>
+				</Field>
+				<ErrorMessage name='date' />
 
 				<button type='submit'>Submit</button>
 			</Form>

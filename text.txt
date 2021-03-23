@@ -24,6 +24,8 @@ patient info name
 dob
 etc
 
+# Need to make a separate table for CPT codes that retrieves the procedure description,
+so in the form selection, the dropdown will have description, DISCUSS
 
 table
 
