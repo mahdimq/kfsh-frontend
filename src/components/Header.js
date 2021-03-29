@@ -1,10 +1,89 @@
-import React from 'react';
+import React, { useRef } from 'react';
+import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { logoutUser } from '../actions/actions';
+
+// Import logos
+import kfshLogo from '../images/kfshLogo.png'
+
+import {
+	StyledNavbar,
+	StyledHeader,
+	StyledLogo
+} from '../styles/StyledHeader';
 
 function Header() {
+	const navLinks = useRef(null);
+	const user = useSelector((state) => state.user);
+	const dispatch = useDispatch();
+
+	const toggleNavbar = () => {
+		navLinks.current.classList.toggle('nav--visible');
+	};
+
+	const logout = async () => {
+		await dispatch(logoutUser());
+		localStorage.removeItem('user-token');
+	};
+
 	return (
-		<div style={{ marginTop: '0' }}>
-			<span>Employee ID - new Procedure - check procedure</span>
-		</div>
+		<StyledHeader>
+			<StyledNavbar>
+				<nav className='container logo-container row '>
+					<button
+						onClick={toggleNavbar}
+						className='nav-toggle'
+						aria-label='open navigation'>
+						<span className='hamburger'></span>
+					</button>
+
+					<div className='logo'>
+						<Link to='/'>
+							<StyledLogo src={kfshLogo} alt='kfsh-logo' />
+						</Link>
+					</div>
+
+					<div ref={navLinks} className='nav'>
+						{user.token ? (
+							<ul className='nav__list '>
+								{user.token ? (
+									<li className='nav__item'>Welcome {user.firstname}</li>
+								) : null}
+
+								<Link to='/patients'>
+									<li className='nav__item'>Patients</li>
+								</Link>
+
+								<Link to='/profile'>
+									<li className='nav__item'>Profile</li>
+								</Link>
+
+{user.is_admin  ? 
+
+								<Link to='/signup'>
+									<li className='nav__item'>New Tech</li>
+								</Link>
+: null }
+
+								<Link to='/'>
+									<li onClick={logout} className='nav__item'>
+										Logout
+									</li>
+								</Link>
+							</ul>
+						) : (
+							<ul className='nav__list '>
+								<Link to='/login'>
+									<li className='nav__item'>Log In</li>
+								</Link>
+
+							</ul>
+						)}
+					</div>
+					
+				</nav>
+			</StyledNavbar>
+		</StyledHeader>
 	);
 }
 
