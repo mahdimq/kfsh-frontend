@@ -25,8 +25,8 @@ function App() {
 			const token = localStorage.getItem('user-token') || null;
 			if (token) {
 				const { firstname, id, is_admin } = decode(token);
-				setUser({firstname, id, is_admin })
-				await dispatch(getUserData(token, firstname, id));
+				setUser({firstname, id, is_admin, token })
+				await dispatch(getUserData(token, firstname, id, is_admin));
 			}
 			setInfoLoaded(true);
 		}

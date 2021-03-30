@@ -7,6 +7,7 @@ import Login from './Login';
 import Registration from './Registration';
 import Profile from './Profile';
 import Users from './Users';
+import Patients from './Patients';
 
 function Routes() {
 	return (
@@ -25,6 +26,10 @@ function Routes() {
 
 			<Route path='/users'>
 				<Users />
+			</Route>
+
+			<Route path='/patients'>
+				<Patients />
 			</Route>
 
 			<Route path='/profile'>

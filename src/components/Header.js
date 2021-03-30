@@ -4,87 +4,83 @@ import { useSelector, useDispatch } from 'react-redux';
 import { logoutUser } from '../actions/actions';
 
 // Import logos
-import kfshLogo from '../images/kfshLogo.png'
+import kfshLogo from '../images/kfshLogo.png';
 
-import {
-	StyledNavbar,
-	StyledHeader,
-	StyledLogo
-} from '../styles/StyledHeader';
+import { StyledNavbar, StyledHeader, StyledLogo } from '../styles/StyledHeader';
 
 function Header() {
-	const navLinks = useRef(null);
-	const user = useSelector((state) => state.user);
-	const dispatch = useDispatch();
+  const navLinks = useRef(null);
+  const user = useSelector((state) => state.user);
+  const dispatch = useDispatch();
 
-	const toggleNavbar = () => {
-		navLinks.current.classList.toggle('nav--visible');
-	};
+console.log('USER IN HEADER: ', user)
 
-	const logout = async () => {
-		await dispatch(logoutUser());
-		localStorage.removeItem('user-token');
-	};
+  const toggleNavbar = () => {
+    navLinks.current.classList.toggle('nav--visible');
+  };
 
-	return (
-		<StyledHeader>
-			<StyledNavbar>
-				<nav className='container logo-container row '>
-					<button
-						onClick={toggleNavbar}
-						className='nav-toggle'
-						aria-label='open navigation'>
-						<span className='hamburger'></span>
-					</button>
+  const logout = async () => {
+    await dispatch(logoutUser());
+    localStorage.removeItem('user-token');
+  };
 
-					<div className='logo'>
-						<Link to='/'>
-							<StyledLogo src={kfshLogo} alt='kfsh-logo' />
-						</Link>
-					</div>
+  return (
+    <StyledHeader>
+      <StyledNavbar>
+        <nav className='container logo-container row '>
+          <button onClick={toggleNavbar} className='nav-toggle' aria-label='open navigation'>
+            <span className='hamburger' />
+          </button>
 
-					<div ref={navLinks} className='nav'>
-						{user.token ? (
-							<ul className='nav__list '>
-								{user.token ? (
-									<li className='nav__item'>Welcome {user.firstname}</li>
-								) : null}
+          <div className='logo'>
+            <Link to='/'>
+              <StyledLogo src={kfshLogo} alt='kfsh-logo' />
+            </Link>
+          </div>
 
-								<Link to='/patients'>
-									<li className='nav__item'>Patients</li>
-								</Link>
+          <div ref={navLinks} className='nav'>
+            {
+              user.token ? <ul className='nav__list '>
+                {
+                  user.token ? <li className='nav__item'>Welcome {user.firstname}</li> :
+                  null}
 
-								<Link to='/profile'>
-									<li className='nav__item'>Profile</li>
-								</Link>
+                <Link to='/patients'>
+                  <li className='nav__item'>Patients</li>
+                </Link>
 
-{user.is_admin  ? 
+                <Link to='/profile'>
+                  <li className='nav__item'>Profile</li>
+                </Link>
 
-								<Link to='/signup'>
-									<li className='nav__item'>New Tech</li>
-								</Link>
-: null }
+                {
+                  user.is_admin ? 
+									<>
+									<Link to='/signup'>
+                    <li className='nav__item'>New Tech</li>
+                  </Link> 
+									<Link to='/users'>
+                    <li className='nav__item'>Users</li>
+                  </Link>
+									</> :
+                  null}
 
-								<Link to='/'>
-									<li onClick={logout} className='nav__item'>
-										Logout
-									</li>
-								</Link>
-							</ul>
-						) : (
-							<ul className='nav__list '>
-								<Link to='/login'>
-									<li className='nav__item'>Log In</li>
-								</Link>
-
-							</ul>
-						)}
-					</div>
-					
-				</nav>
-			</StyledNavbar>
-		</StyledHeader>
-	);
+                <Link to='/'>
+                  <li onClick={logout} className='nav__item'>
+                    Logout
+                  </li>
+                </Link>
+              </ul> :
+              <ul className='nav__list '>
+                <Link to='/login'>
+                  <li className='nav__item'>Log In</li>
+                </Link>
+              </ul>}
+          </div>
+        </nav>
+      </StyledNavbar>
+    </StyledHeader>
+  );
 }
 
 export default Header;

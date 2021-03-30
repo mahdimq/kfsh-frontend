@@ -9,3 +9,8 @@ export const LOGOUT_USER = 'LOGOUT_USER';
 // Alert Actions
 export const ADD_ALERT = 'ADD_ALERT';
 export const REMOVE_ALERTS = 'REMOVE_ALERTS';
+// Patient Actions 
+export const FETCH_PATIENTS = 'FETCH_PATIENTS';
+export const FETCH_PATIENT_INFO = 'FETCH_PATIENT_INFO';
+export const ADD_PATIENT = 'ADD_PATIENT';
+export const UPDATE_PATIENT = 'UPDATE_PATIENT';

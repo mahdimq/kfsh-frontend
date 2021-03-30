@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { fetchUsers } from '../actions/actions';
+import { getAllPatients } from '../actions/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from './Spinner';
 
-// ADMIN COMPONENT ONLY
-function Users() {
+function Patients() {
   const [ isLoaded, setIsLoaded ] = useState(false);
   const dispatch = useDispatch();
-  const { users } = useSelector((state) => state.user);
+  const { patients } = useSelector((state) => state.patient);
 
   useEffect(
     () => {
-      async function getUsers() {
-        await dispatch(fetchUsers());
+      async function getPatients() {
+        await dispatch(getAllPatients());
         setIsLoaded(true);
       }
-      getUsers();
+      getPatients();
     },
     [ dispatch ]
   );
@@ -24,10 +23,11 @@ function Users() {
     return <Spinner />;
   };
 
-
+console.log("PATIENTS: ", patients)
   return (
+    
     <table style={{border: "solid black 1px", margin: "2em auto"}}>
-      {users.map((u) => (
+      {patients.map((u) => (
         <tr style={{ padding: "0.5em",border: 'solid black 1px' }} key={u.id}>
           <td style={{ padding: "0.5em", border: 'solid black 1px' }}>{u.id}: </td>
           <td style={{ padding: "0.5em", border: 'solid black 1px' }}>
@@ -37,7 +37,7 @@ function Users() {
         </tr>
       ))}
     </table>
-  );
+  )
 }
 
-export default Users;
+export default Patients;

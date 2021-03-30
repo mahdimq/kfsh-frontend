@@ -9,7 +9,7 @@ import styled from 'styled-components';
 // `;
 
 export const StyledLogo = styled.img`
-	width: 10em;
+	width: 10rem;
 
 	@media screen and (max-width: 500px) {
 		width: 8em;
@@ -38,7 +38,7 @@ export const StyledNavbar = styled.nav`
 	background-color: #bab4a9;
 	-webkit-font-smoothing: antialiased;
 	text-align: center;
-	padding: 1em 0;
+	padding: 0.5em 0;
 	color: white;
 
 	.container {
@@ -65,7 +65,7 @@ export const StyledNavbar = styled.nav`
 	.nav__item {
 		font-family: 'Abel', sans-serif;
 		padding: 0.75rem;
-		font-size: 1.1rem;
+		font-size: 0.75rem;
 		text-decoration: none;
 		text-transform: uppercase;
 	}
@@ -98,7 +98,7 @@ export const StyledNavbar = styled.nav`
 		transition: opacity 250ms ease;
 
 		position: absolute;
-		left: 0;
+		right: 0;
 	}
 
 	.nav-toggle:focus,

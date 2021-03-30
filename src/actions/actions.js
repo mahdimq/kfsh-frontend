@@ -7,7 +7,11 @@ import {
 	FETCH_ALL_USERS,
 	ADD_ALERT,
 	REMOVE_ALERTS,
-	GET_USER_INFO
+	GET_USER_INFO,
+	FETCH_PATIENTS,
+	FETCH_PATIENT_INFO,
+	ADD_PATIENT,
+	UPDATE_PATIENT
 } from './actionTypes';
 
 import kfshAPI from '../kfshAPI';
@@ -163,52 +167,58 @@ export const logout = () => {
 };
 
 // ########################################################
-// ################ MOVIE STATE MANAGEMENT ################
+// ################ PATIENT STATE MANAGEMENT ################
 // ########################################################
-// // ADD MOVIE TO DATABASE
-// export const addMovie = (data) => {
-// 	return async function (dispatch) {
-// 		try {
-// 			const res = await kfshAPI.addMovie(data);
-// 			await dispatch(movieAdded(res));
-// 		} catch (err) {
-// 			console.error(err);
-// 		}
-// 	};
-// };
+// RETRIEVE PATIENT INFO FROM DATABASE
+export const getPatient = (mrn) => {
+	return async function (dispatch) {
+		const res = await kfshAPI.getPatient(mrn);
+		await dispatch(gotPatient(res));
+	};
+};
 
-// // movie added
-// const movieAdded = (movieData) => {
-// 	return { type: ADD_MOVIE, payload: movieData };
-// };
+// got Patient
+const gotPatient = (patient) => {
+	return { type: FETCH_PATIENT_INFO, payload: patient };
+};
 
-// // =====================================================
+// =====================================================
+// GET ALL PATIENTS FROM DATABASE (test)
+export const getAllPatients = () => {
+	return async function (dispatch) {
+		const patients = await kfshAPI.getAllPatients();
+		await dispatch(gotPatients(patients));
+	};
+};
 
-// // RETRIEVE MOVIE FROM DATABASE
-// export const getMovie = (id) => {
-// 	return async function (dispatch) {
-// 		const res = await kfshAPI.getMovie(id);
-// 		await dispatch(gotMovie(res));
-// 	};
-// };
+const gotPatients = (patients) => {
+	return { type: FETCH_PATIENTS, payload: patients };
+};
+// =====================================================
+// ADD PATIENT TO DATABASE 
+export const addPatient = (data) => {
+	return async function (dispatch) {
+		try {
+			const patient = await kfshAPI.addPatient(data);
+			await dispatch(patientAdded(patient));
+			await dispatch(
+				addAlert(`Patient added Successfully!`, 'success')
+			);
+		} catch (err) {
+			err.forEach((error) => dispatch(addAlert(error, 'error')));
+		}
+	};
+};
 
-// // got movie
-// const gotMovie = (movieData) => {
-// 	return { type: GET_MOVIE, payload: movieData };
-// };
 
-// // =====================================================
-// // GET ALL MOVIES FROM DATABASE (test)
-// export const getAllFilms = () => {
-// 	return async function (dispatch) {
-// 		const movies = await kfshAPI.getAllMovies();
-// 		await dispatch(gotMovie(movies));
-// 	};
-// };
+// patient added
+const patientAdded = (patient) => {
+	return { type: ADD_PATIENT, payload: patient };
+};
 
-// // =====================================================
+// =====================================================
 
-// // REMOVE MOVIE FROM DATABASE
+// // REMOVE PATIENT FROM DATABASE
 // export const removeMovie = (id) => {
 // 	return async function (dispatch) {
 // 		await kfshAPI.deleteMovie(id);
@@ -222,7 +232,7 @@ export const logout = () => {
 // 	};
 // };
 
-// // =====================================================
+// =====================================================
 
 // // ########################################################
 // // ############# WATCHLIST STATE MANAGEMENT ###############
