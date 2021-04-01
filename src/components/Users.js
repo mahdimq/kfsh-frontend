@@ -3,6 +3,9 @@ import { fetchUsers } from '../actions/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from './Spinner';
 
+// Import Users Table Styles
+import "../styles/Users.css"
+
 // ADMIN COMPONENT ONLY
 function Users() {
   const [ isLoaded, setIsLoaded ] = useState(false);
@@ -25,18 +28,28 @@ function Users() {
   };
 
 
+  const usersTable = users.map((u) => (
+    <tr key={u.id}>
+      <td>{u.id}</td>
+      <td>{u.firstname}</td>
+      <td>{u.lastname}</td>
+      <td>{JSON.stringify(u.is_admin)}</td>
+    </tr>
+  ));
+
   return (
-    <table style={{border: "solid black 1px", margin: "2em auto"}}>
-      {users.map((u) => (
-        <tr style={{ padding: "0.5em",border: 'solid black 1px' }} key={u.id}>
-          <td style={{ padding: "0.5em", border: 'solid black 1px' }}>{u.id}: </td>
-          <td style={{ padding: "0.5em", border: 'solid black 1px' }}>
-            {u.firstname} {u.lastname}
-          </td>
-          <td style={{ border: 'solid black 1px' }}>Admin: {JSON.stringify(u.is_admin)}</td>
-        </tr>
-      ))}
-    </table>
+    <div style={{margin: '1em'}}>
+      <h1 className="users-title">Neurophysiology Technologists</h1>
+      <table className="users-table">
+        <tbody>
+          <th>Employee ID</th>
+          <th>First Name</th>
+          <th>Last Name</th>
+          <th>Admin Status</th>
+          {usersTable}
+        </tbody>
+      </table>
+    </div>
   );
 }
 

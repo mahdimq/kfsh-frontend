@@ -1,0 +1,32 @@
+.patients-title {
+  justify-content: center;
+  text-align: center;
+  font: "Open Sans", sans-serif;
+  color: #fff;
+  text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.69);
+}
+
+.patients-table {
+  text-align: center;
+  font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  border: 3px solid #ddd;
+  width: 100%;
+}
+
+.patients-table td, .patients-table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+.patients-table tr:nth-child(even){background-color: #f2f2f2;}
+
+.patients-table tr:hover {background-color: #ddd;}
+
+.patients-table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: center;
+  background-color: #70a7bd;
+  color: white;
+}

@@ -25,13 +25,13 @@ const validationSchema = object().shape({
   password: string().required().min(4),
   firstname: string().required(),
   lastname: string().required(),
-  is_admin: boolean().required(false)
+  is_admin: boolean().required()
 });
 
 const Registration = () => {
   const history = useHistory();
   const dispatch = useDispatch();
-  const [ toggle, setToggle ] = useState(true);
+  const [ toggle, setToggle ] = useState(false);
 
   // const user = useSelector((state) => state.user);
 
@@ -44,15 +44,15 @@ const Registration = () => {
   // 	checkRegistration();
   // });
 
-
   const handleToggle = () => {
-		setToggle(checked => !checked);
+    toggle ? setToggle(false) : setToggle(true);
+		console.log(toggle)
   };
 
   const handleSubmit = async (data) => {
     try {
       await dispatch(registerUser(data));
-      history.push('/');
+			history.push('/users')
     } catch (err) {
       err.forEach((error) => {
         dispatch(addAlert(error, 'error'));
@@ -76,7 +76,7 @@ const Registration = () => {
           <div className='input-box'>
             <FormControlLabel
               label='Admin Account: '
-              control={<Switch checked={!toggle} type="checkbox" onChange={handleToggle} name='is_admin' />}
+              control={<Switch defaultUnchecked checked={toggle} type='checkbox' onChange={handleToggle} name='is_admin' />}
             />
           </div>
 
@@ -84,16 +84,6 @@ const Registration = () => {
             <Button variant='contained' size='large' color='secondary' className='profile-btn' type='submit'>
               Signup
             </Button>
-            {/* <Button
-              onClick={() => history.push('/login')}
-              variant='contained'
-              size='large'
-              color='primary'
-              className='profile-btn'
-              style={{ marginLeft: '0.8em' }}
-            >
-              Login
-            </Button> */}
           </div>
         </Form>
       </Formik>

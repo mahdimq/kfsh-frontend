@@ -35,7 +35,7 @@ export const StyledHeader = styled.div`
 `;
 
 export const StyledNavbar = styled.nav`
-	background-color: #bab4a9;
+	background-color: #bbe7f2;
 	-webkit-font-smoothing: antialiased;
 	text-align: center;
 	padding: 0.5em 0;

@@ -13,8 +13,6 @@ function Header() {
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
-console.log('USER IN HEADER: ', user)
-
   const toggleNavbar = () => {
     navLinks.current.classList.toggle('nav--visible');
   };
@@ -54,15 +52,12 @@ console.log('USER IN HEADER: ', user)
                 </Link>
 
                 {
-                  user.is_admin ? 
-									<>
-									<Link to='/signup'>
-                    <li className='nav__item'>New Tech</li>
-                  </Link> 
-									<Link to='/users'>
-                    <li className='nav__item'>Users</li>
-                  </Link>
-									</> :
+									user.is_admin ? 
+									<Link to="/admin">
+										
+										<li className='nav__item'>Admin</li>
+									</Link>
+									 :
                   null}
 
                 <Link to='/'>

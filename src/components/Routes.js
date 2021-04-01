@@ -8,12 +8,17 @@ import Registration from './Registration';
 import Profile from './Profile';
 import Users from './Users';
 import Patients from './Patients';
+import Admin from './Admin';
 
 function Routes() {
 	return (
 		<Switch>
 			<Route exact path='/'>
 				<Home />
+			</Route>
+
+			<Route exact path='/admin'>
+				<Admin />
 			</Route>
 
 			<Route path='/login'>

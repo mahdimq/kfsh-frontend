@@ -10,8 +10,8 @@ import {
 	GET_USER_INFO,
 	FETCH_PATIENTS,
 	FETCH_PATIENT_INFO,
-	ADD_PATIENT,
-	UPDATE_PATIENT
+	ADD_PATIENT
+	// UPDATE_PATIENT
 } from './actionTypes';
 
 import kfshAPI from '../kfshAPI';
@@ -215,6 +215,24 @@ export const addPatient = (data) => {
 const patientAdded = (patient) => {
 	return { type: ADD_PATIENT, payload: patient };
 };
+
+// =====================================================
+// GET PATIENT INFORMATION
+export const findPatient = (mrn)=>{
+	return async function (dispatch) {
+		try {
+			const patient = await kfshAPI.getPatient(mrn);
+			return dispatch(getPatientInfo(patient));
+		} catch (err) {
+			err.forEach(error => dispatch(addAlert(error, 'error')));
+		}
+	};
+};
+
+function getPatientInfo(patient) {
+	return { type: FETCH_PATIENT_INFO, payload: patient };
+};
+
 
 // =====================================================
 
