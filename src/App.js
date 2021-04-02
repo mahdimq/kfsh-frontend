@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { decode } from 'jsonwebtoken';
 import { getUserData } from './actions/actions';
-import userContext from "./userContext"
+import userContext from "./userContext";
+
 
 // Import Components
 import Alerts from './components/Alerts';
@@ -42,7 +43,7 @@ function App() {
 			<userContext.Provider value={user}>
 			<Header />
 			<Alerts /> 
-			<Routes />
+			<Routes />		
 			</userContext.Provider>
 		</div>
 	);
