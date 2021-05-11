@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchUsers } from '../actions/actions';
+import { fetchUsers, loadHospitalData } from '../actions/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from './Spinner';
 
@@ -11,6 +11,21 @@ function Users() {
   const [ isLoaded, setIsLoaded ] = useState(false);
   const dispatch = useDispatch();
   const { users } = useSelector((state) => state.user);
+  // const { locations, departments, tests } = useSelector((state) => state.data);
+  const data = useSelector((state) => state.data);
+
+  console.log("LOCATIONS< DEPARTMENTS< TESTS: ", data)
+
+  // useEffect(
+  //   ()=> {
+  //     async function getData(){
+  //       await dispatch(loadHospitalData());
+  //       setIsLoaded(true);
+  //     }
+  //     getData();
+  //   },
+  //   [dispatch]
+  // )
 
   useEffect(
     () => {

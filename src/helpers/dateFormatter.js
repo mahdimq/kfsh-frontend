@@ -1,0 +1,17 @@
+
+export const formatDate = (date) => {
+	// NEED TO ADD DATE FORMATTER IN HERE
+	let d = new Date(date).toLocaleDateString();
+	return d;
+};
+
+export const age = (date) => {
+	const today = new Date();
+	const birthDate = new Date(date);
+	let age = today.getFullYear() - birthDate.getFullYear();
+	const m = today.getMonth() - birthDate.getMonth();
+	if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+		age--;
+	}
+	return age;
+};

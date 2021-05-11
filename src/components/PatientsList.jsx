@@ -1,5 +1,5 @@
 import React, {useState, useEffect, useMemo} from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from 'styled-components';
 import BTable from 'react-bootstrap/Table';
 import { useTable, useFilters, useSortBy } from 'react-table';

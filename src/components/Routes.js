@@ -3,48 +3,67 @@ import { Switch, Redirect, Route } from 'react-router-dom';
 
 // Import Components
 import Home from './Home';
-import Login from './Login';
-import Registration from './Registration';
+import Login from '../pages/Users/Login';
+import Registration from '../pages/Users/Registration';
 import Profile from './Profile';
-import Users from './Users';
-import Patients from './Patients';
+import Users from '../pages/Users/Users';
 import Admin from './Admin';
+// import PatientsList from './PatientsList';
+// import Patients from './Patients';
+import Patients from '../pages/Patients/Patients';
+import HospitalForm from '../pages/Hospital/HospitalForm';
+import Procedures from '../pages/Procedures/Procedures'
+import VisitForm from '../pages/Patients/VisitForm';
+import ProcedureForm from '../pages/Procedures/ProcedureForm';
+import Hospital from '../pages/Hospital/Hospital';
 
 function Routes() {
-	return (
-		<Switch>
-			<Route exact path='/'>
-				<Home />
-			</Route>
+  return (
+    <Switch>
+      <Route exact path='/'>
+        <Home />
+      </Route>
 
-			<Route exact path='/admin'>
-				<Admin />
-			</Route>
+      <Route exact path='/admin'>
+        <Admin />
+      </Route>
 
-			<Route path='/login'>
-				<Login />
-			</Route>
+      <Route path='/login'>
+        <Login />
+      </Route>
 
-			<Route path='/signup'>
-				<Registration />
-			</Route>
+      <Route path='/hospital'>
+        <Hospital />
+      </Route>
 
-			<Route path='/users'>
-				<Users />
-			</Route>
+      <Route path='/signup'>
+        <Registration />
+      </Route>
 
-			<Route path='/patients'>
-				<Patients />
-			</Route>
+      <Route path='/users'>
+        <Users />
+      </Route>
 
-			<Route path='/profile'>
-				<Profile />
-			</Route>
+      <Route path='/patients'>
+        {/* <PatientsList /> */}
+        <Patients/>
+      </Route>
 
+      <Route exact path='/visits'>
+        <VisitForm/>
+      </Route>
 
-			<Redirect to='/' />
-		</Switch>
-	);
+      <Route exact path='/procedures'>
+        <Procedures/>
+      </Route>
+
+      <Route path='/profile'>
+        <Profile />
+      </Route>
+
+      <Redirect to='/' />
+    </Switch>
+  );
 }
 
 export default Routes;

@@ -82,57 +82,102 @@ class kfshAPI {
 		return res;
 	}
 
-	// static async deleteMovie(movie_id, token) {
-	// 	let res = await this.request(`movies/${movie_id}`, { _token: token }, 'delete');
-	// 	return res;
-	// }
-
 	// ########################################################
-	// ################# WATCHLIST ENDPOINTS ##################
+	// ################# HOSPITAL ENDPOINTS ##################
 	// ########################################################
 
-	// static async addWatchlist(user_id, data) {
-	// 	let res = await this.request(`watchlist/${user_id}/add`, data, 'post');
-	// 	return res;
-	// }
+	static async addPhysician(data) {
+		let res = await this.request(`physicians/`, data, 'post');
+		return res;
+	}
 
-	// static async getWatchlist(id) {
-	// 	let res = await this.request(`watchlist/${id}`);
-	// 	return res;
-	// }
+	static async getPhysicians() {
+		let res = await this.request(`physicians`);
+		return res;
+	}
 
-	// static async deleteWatchlist(user_id, movie_id, data) {
-	// 	let res = await this.request(`watchlist/${user_id}/${movie_id}`, data, 'delete');
-	// 	return res;
-	// }
+	static async getSinglePhysician(id) {
+		let res = await this.request(`physicians/${id}`);
+		return res;
+	}
 
-	// // ########################################################
-	// // ##################### API ENDPOINTS ####################
-	// // ########################################################
+  static async addDepartment(data) {
+		let res = await this.request(`departments/`, data, 'post');
+		return res;
+	}
 
-	// // GET TRENDING MOVIES
-	// static async getTrending() {
-	// 	const result = await this.request(`api/trending`);
-	// 	return result;
-	// }
+	static async getDepartments() {
+		let res = await this.request(`departments`);
+		return res;
+	}
 
-	// // GET POPULAR MOVIES
-	// static async getPopular() {
-	// 	const result = await this.request(`api/trending`);
-	// 	return result;
-	// }
+  static async addLocation(data) {
+		let res = await this.request(`locations/`, data, 'post');
+		return res;
+	}
 
-	// // GET MOVIE BY ID
-	// static async getById(movie_id) {
-	// 	const result = await this.request(`api/${movie_id}`);
-	// 	return result;
-	// }
+	static async getLocations() {
+		let res = await this.request(`locations`);
+		return res;
+	}
 
-	// // GET MOVIE CREDITS BY ID
-	// static async getMovieCredits(movie_id) {
-	// 	const result = await this.request(`api/credits/${movie_id}`);
-	// 	return result;
-	// }
+  static async addTest(data) {
+		let res = await this.request(`tests/`, data, 'post');
+		return res;
+	}
+
+	static async getTests() {
+		let res = await this.request(`tests`);
+		return res;
+	}
+
+	static async deletePhysician(physician_id, data) {
+		let res = await this.request(`physicians/${physician_id}/`, data, 'delete');
+		return res;
+	}
+
+	static async deleteDepartment(dept_id, data) {
+		let res = await this.request(`departments/${dept_id}/`, data, 'delete');
+		return res;
+	}
+
+	static async deleteLocation(loc_id, data) {
+		let res = await this.request(`locations/${loc_id}/`, data, 'delete');
+		return res;
+	}
+
+	static async deleteTest(test_id, data) {
+		let res = await this.request(`tests/${test_id}/`, data, 'delete');
+		return res;
+	}
+
+	// ########################################################
+	// ##################### PROCEDURES ENDPOINTS ###################
+	// ########################################################
+
+	// GET ALL PROCEDURES
+	static async getProcedures() {
+		const result = await this.request(`procedures`);
+		return result;
+	}
+
+	// GET SINGLE PROCEDURE BY MRN
+	static async getProcedureByMrn(mrn) {
+		const result = await this.request(`procedures/${mrn}`);
+		return result;
+	}
+
+	// ADD A NEW PROCEDURE
+	static async addProcedure(data) {
+		const result = await this.request(`procedures/`, data, 'post');
+		return result;
+	}
+
+	// REMOVE PROCEDURE BY MRN
+	static async removeProcedure(mrn, token) {
+		const result = await this.request(`procedures/${mrn}`, { _token: token }, 'delete');
+		return result.message;
+	}
 }
 
 export default kfshAPI;

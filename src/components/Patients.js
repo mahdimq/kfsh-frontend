@@ -13,7 +13,7 @@ function Patients() {
 
   useEffect(
     () => {
-      async function getPatients() {
+       async function getPatients() {
         await dispatch(getAllPatients());
         setIsLoaded(true);
       }

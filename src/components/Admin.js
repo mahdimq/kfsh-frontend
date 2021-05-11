@@ -16,6 +16,11 @@ function Admin() {
           Get All Users
         </Button>
       </Link>
+      <Link to='/hospital'>
+        <Button style={{margin: "1em"}} variant='contained' size='medium' color='primary' className='profile-btn btn'>
+          Hospital Form
+        </Button>
+      </Link>
     </div>
   );
 }

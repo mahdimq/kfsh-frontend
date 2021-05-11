@@ -1,4 +1,4 @@
-import React from 'react';
+import React from 'react'
 
 const formatDate = (date) => {
 	// NEED TO ADD DATE FORMATTER IN HERE

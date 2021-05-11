@@ -1,12 +1,8 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import Search from './Search';
 
-import Button from '@material-ui/core/Button';
-import '../styles/Home.css';
-import { getPatient } from '../actions/actions';
-import PatientInfo from './PatientInfo';
+import {Button, Container} from '@material-ui/core';
 
 function Home() {
 	const dispatch = useDispatch();
@@ -14,24 +10,23 @@ function Home() {
   const user = useSelector((state) => state.user);
 	const patient = useSelector(state => state.patient)
 
-	const searchPatient = async (mrn) => {
-		try {
-			await dispatch(getPatient(mrn))
+	// const searchPatient = async (mrn) => {
+	// 	try {
+	// 		await dispatch(getPatient(mrn))
 			
-		} catch (err){
-			console.error(err);
-		}
-	}
-
-	console.log("PATIENT IN HOME: ", patient)
-
+	// 	} catch (err){
+	// 		console.error(err);
+	// 	}
+	// }
   return (
-    <section className='hero background-image'>
-      <Search callback={searchPatient} />
-			<PatientInfo data={patient.patient}/>
-      <div className='hero-content-area'>
+    <Container component='main' maxWidth='xs'>
+
+    
+      {/* <Search callback={searchPatient} /> */}
+			{/* <PatientInfo data={patient.patient}/> */}
+      
         <h1>KFSH Neurophysiology</h1>
-        <h3>Patient Data. Simplified.</h3>
+        <h4>Patient Data. Simplified.</h4>
 
         {
           user.token ? <h3>Welcome Back {user.firstname}!</h3> :
@@ -44,8 +39,7 @@ function Home() {
           >
             Login
           </Button>}
-      </div>
-    </section>
+    </Container>
   );
 }
 export default Home;
