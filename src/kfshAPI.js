@@ -120,6 +120,10 @@ class kfshAPI {
 		let res = await this.request(`locations`);
 		return res;
 	}
+	static async getLocation(id) {
+		let res = await this.request(`locations/${id}`);
+		return res;
+	}
 
   static async addTest(data) {
 		let res = await this.request(`tests/`, data, 'post');
@@ -162,8 +166,8 @@ class kfshAPI {
 	}
 
 	// GET SINGLE PROCEDURE BY MRN
-	static async getProcedureByMrn(mrn) {
-		const result = await this.request(`procedures/${mrn}`);
+	static async getProcedure(id) {
+		const result = await this.request(`procedures/${id}`);
 		return result;
 	}
 
@@ -178,6 +182,17 @@ class kfshAPI {
 		const result = await this.request(`procedures/${mrn}`, { _token: token }, 'delete');
 		return result.message;
 	}
+
+
+	// ########################################################
+	// ##################### VISIT ENDPOINTS ###################
+	// ########################################################
+	// GET ALL VISITS
+  static async getVisits(mrn) {
+		const result = await this.request(`visits/${mrn}`);
+		return result;
+	}
 }
+
 
 export default kfshAPI;

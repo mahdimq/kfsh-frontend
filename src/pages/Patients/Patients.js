@@ -20,6 +20,8 @@ import { formatDate, age } from '../../helpers/dateFormatter';
 
 import { useSelector } from 'react-redux';
 import { getAllPatients } from '../../actions/actions';
+import { useParams } from 'react-router';
+import {Link} from 'react-router-dom'
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -42,6 +44,7 @@ const headCells = [
 ];
 
 function Patients() {
+  const {mrn} = useParams();
   const classes = useStyles();
   const [ loading ] = useFetchHook(getAllPatients());
   const [ filterFunc, setFilterFunc ] = useState({
@@ -67,7 +70,6 @@ function Patients() {
         else
           return items.filter(
             (x) => JSON.stringify(x.mrn).includes(target.value)
-            // x.firstname.toLowerCase().includes(target.value.toLowerCase())
           );
       }
     });
@@ -109,7 +111,7 @@ function Patients() {
 
               <TableBody>
                 {recordsAfterSorting().map((item) => (
-                  <TableRow key={item.mrn}>
+                  <TableRow key={item.mrn} component={Link} to={`/visits/${item.mrn}`}>
                     <TableCell>{item.mrn}</TableCell>
                     <TableCell>
                       {item.firstname} {item.middlename} {item.lastname}

@@ -18,7 +18,11 @@ import {
   ADD_PROCEDURE,
   GET_ALL_PROCEDURES,
   GET_SINGLE_PROCEDURE,
-  DELETE_PROCEDURE
+  DELETE_PROCEDURE,
+  GET_VISITS,
+  GET_VISIT,
+  ADD_VISIT,
+  DELETE_VISIT
 } from './actionTypes';
 
 import kfshAPI from '../kfshAPI';
@@ -377,10 +381,10 @@ const gotProcedures = (data) => {
 };
 
 // GET SINGLE PROCEDURE BY PATIENT
-export const fetchSingleProcedure = (mrn) => {
+export const fetchSingleProcedure = (name) => {
   return async function(dispatch) {
     try {
-      const procedure = await kfshAPI.getProcedureByMrn(mrn);
+      const procedure = await kfshAPI.getProcedureByMrn(name);
       await dispatch(gotProcedure(procedure));
     } catch (err) {
       err.forEach((error) => dispatch(addAlert(error, 'error')));
@@ -427,24 +431,36 @@ export const removeProcedure = (mrn, token) => {
 // ############# VISIT STATE MANAGEMENT ###############
 // ########################################################
 
-// // RETRIEVE WATCHLIST FROM DATABASE
-// export const loadWatchlist = (user_id) => {
-// 	return async function (dispatch) {
-// 		try {
-// 			const res = await kfshAPI.getWatchlist(user_id);
-// 			if (!res) await dispatch(addAlert('NO MOVIES FOUND IN WATCHLIST', 'warning'));
-// 			await dispatch(gotWatchlist(res));
-// 		} catch (err) {
-// 			err.forEach((error) => {
-// 				dispatch(addAlert(error, 'error'));
-// 			});
-// 		}
-// 	};
-// };
+// // RETRIEVE VISITS FROM DATABASE
+export const fetchVisits = (mrn) => {
+	return async function (dispatch) {
+		try {
+			const res = await kfshAPI.getVisits(mrn);
+			if (!res) await dispatch(addAlert('NO VISITS FOUND', 'warning'));
+			await dispatch(gotVisits(res));
+		} catch (err) {
+			err.forEach((error) => {
+				dispatch(addAlert(error, 'error'));
+			});
+		}
+	};
+};
 
-// const gotWatchlist = (watchlist) => {
-// 	return { type: LOAD_WATCHLIST, payload: watchlist };
-// };
+const gotVisits = (data) => {
+	return { type: GET_VISITS, payload: data};
+};
+
+export const getVisitInfo = (mrn) => {
+  return async function(dispatch) {
+    const res = await kfshAPI.getVisits(mrn);
+    await dispatch(gotVisiting(res));
+  };
+};
+
+// got Patient
+const gotVisiting = (mrn) => {
+  return { type: GET_VISITS, payload: mrn };
+};
 
 // // REMOVE FROM WATCHLIST
 // export const removeWatchlist = (user_id, movie_id) => {

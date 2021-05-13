@@ -61,10 +61,11 @@ export default function PatientForm() {
         await dispatch(addPatient(formData));
         // history.goBack();
       } catch (err) {
-          dispatch(addAlert(err, 'error'));
-        };
+        dispatch(addAlert(err, 'error'))
+          // err.forEach(element => dispatch(addAlert(element, 'error')));
+        }
+      }
       handleReset();
-    }
   };
 
   const genderItems = [

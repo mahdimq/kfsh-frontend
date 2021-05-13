@@ -16,6 +16,7 @@ import Procedures from '../pages/Procedures/Procedures'
 import VisitForm from '../pages/Patients/VisitForm';
 import ProcedureForm from '../pages/Procedures/ProcedureForm';
 import Hospital from '../pages/Hospital/Hospital';
+import Visits from '../pages/Patients/Visits'
 
 function Routes() {
   return (
@@ -49,8 +50,8 @@ function Routes() {
         <Patients/>
       </Route>
 
-      <Route exact path='/visits'>
-        <VisitForm/>
+      <Route exact path='/visits/:mrn'>
+        <Visits/>
       </Route>
 
       <Route exact path='/procedures'>

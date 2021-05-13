@@ -44,7 +44,6 @@ function Users() {
     }
   });
 
-  console.log("USERS: ", users, typeof(users))
   const { TableContainer, TableHeader, TablePagination, recordsAfterSorting } = useTable(
     users,
     headCells,

@@ -23,3 +23,8 @@ export const ADD_PROCEDURE = 'ADD_PROCEDURE';
 export const GET_ALL_PROCEDURES = 'GET_ALL_PROCEDURES';
 export const GET_SINGLE_PROCEDURE = "GET_SINGLE_PROCEDURE";
 export const DELETE_PROCEDURE = "DELETE_PROCEDURE";
+// Visit Actions
+export const GET_VISITS = 'GET_VISITS';
+export const GET_VISIT = 'GET_VISIT';
+export const ADD_VISIT = 'ADD_VISIT';
+export const DELETE_VISIT = 'DELETE_VISIT';

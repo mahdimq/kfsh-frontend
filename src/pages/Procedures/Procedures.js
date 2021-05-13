@@ -33,10 +33,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const headCells = [
-  { id: 'log_num', label: 'NPL Log ID' },
-  { id: 'ped_log_num', label: 'P-NPL Log ID' },
   { id: 'name', label: 'Procedure' },
-  { id: 'visit_id', label: 'Visit ID' },
 ];
 
 export default function Procedures() {
@@ -98,7 +95,7 @@ export default function Procedures() {
           />
         </Toolbar>
 
-        {/* <ProcedureForm /> */}
+        <ProcedureForm />
 
         {!loading && (
           <React.Fragment>
@@ -108,12 +105,7 @@ export default function Procedures() {
               <TableBody>
                 {recordsAfterSorting().map((item) => (
                   <TableRow key={item.id}>
-                    <TableCell>{item.log_num}</TableCell>
-                    <TableCell>{item.ped_log_num}</TableCell>
-                    <TableCell>
-                      {item.name}
-                    </TableCell>
-                    <TableCell>{item.visit_id}</TableCell>
+                    <TableCell>{item.name}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>
