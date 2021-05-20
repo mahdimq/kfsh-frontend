@@ -5,7 +5,6 @@ import { Switch, Redirect, Route } from 'react-router-dom';
 import Home from './Home';
 import Login from '../pages/Users/Login';
 import Registration from '../pages/Users/Registration';
-import Profile from './Profile';
 import Users from '../pages/Users/Users';
 import Admin from './Admin';
 // import PatientsList from './PatientsList';
@@ -17,6 +16,8 @@ import VisitForm from '../pages/Patients/VisitForm';
 import ProcedureForm from '../pages/Procedures/ProcedureForm';
 import Hospital from '../pages/Hospital/Hospital';
 import Visits from '../pages/Patients/Visits'
+import Visit from '../pages/Patients/Visit'
+import VisitTest from '../pages/Patients/VisitTest'
 
 function Routes() {
   return (
@@ -46,21 +47,25 @@ function Routes() {
       </Route>
 
       <Route path='/patients'>
-        {/* <PatientsList /> */}
         <Patients/>
       </Route>
 
-      <Route exact path='/visits/:mrn'>
+      <Route exact path='/visits'>
         <Visits/>
       </Route>
 
-      <Route exact path='/procedures'>
-        <Procedures/>
+      <Route exact path='/visits/:mrn'>
+        <Visit/>
       </Route>
 
-      <Route path='/profile'>
-        <Profile />
+      <Route exact path='/visits/:mrn/:npl'>
+        <VisitTest/>
       </Route>
+{/* 
+      <Route exact path='/procedures'>
+        <Procedures/>
+      </Route> */}
+
 
       <Redirect to='/' />
     </Switch>

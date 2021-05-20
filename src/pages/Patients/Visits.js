@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
-import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
-import { Search } from '@material-ui/icons';
+import { MenuBook, Search } from '@material-ui/icons';
 import {
   InputAdornment,
   makeStyles,
@@ -10,47 +9,52 @@ import {
   TableBody,
   TableCell,
   TableRow,
-  Toolbar
+  Toolbar,
+  Typography
 } from '@material-ui/core';
 import useTable from '../../hooks/useTable';
 import Input from '../../hooks/controls/Input';
 
 import { formatDate, age } from '../../helpers/dateFormatter';
-import { useFetchHook } from '../../helpers/useFetch';
-import { addAlert, fetchVisits } from '../../actions/actions';
-import { useDispatch } from 'react-redux';
+import { useFetchHook } from '../../hooks/useFetch';
+import { addAlert, fetchAllVisits } from '../../actions/actions';
 import { useParams } from 'react-router';
-import kfshAPI from '../../kfshAPI';
-import { FETCH_ALL_USERS } from '../../actions/actionTypes';
+import { useDispatch, useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
-    margin: theme.spacing(5),
-    padding: theme.spacing(5)
+    margin: theme.spacing(3),
+    padding: theme.spacing(3),
+    textTransform:'capitalize'
   },
   searchInput: {
     width: '60%'
+  },
+  link: {
+    textDecoration: 'none',
+    color: 'inherit',
+    '&:hover': {
+      backgroundColor: '#fffbf2 !important'
+    }
   }
 }));
 
 const headCells = [
+  { id: 'visit_date', label: 'Date' },
+  { id: 'patient_mrn', label: 'MRN', disableSorting: true },
+  { id: 'p_firstname', label: 'Name', disableSorting: true},
+  { id: 'procedure_id', label: 'Procedure', disableSorting: true },
+  { id: 'location_id', label: 'Location', disableSorting: true},
+  { id: 'physician_id', label: 'Physician', disableSorting: true},
+  { id: 'user_id', label: 'Technologist', disableSorting: true},
   { id: 'log_num', label: 'NPL' },
-  { id: 'ped_log_num', label: 'P-NPL' },
-  { id: 'patient_mrn', label: 'MRN' },
-  { id: 'procedure_id', label: 'Procedure' },
-  { id: 'physician_id', label: 'Physician' },
-  { id: 'user_id', label: 'Technologist' },
-  { id: 'visit_date', label: 'Date of Visit' },
-  { id: 'location_id', label: 'Location' }
+  { id: 'ped_log_num', label: 'PNPL', disableSorting: true}
 ];
 
 export default function Visits() {
-  const { mrn } = useParams();
   const classes = useStyles();
-  const dispatch = useDispatch();
-  const [ loading, setLoading ] = useState(true);
-  const [ visit, setVisit ] = useState([]);
-  const [ details, setDetails ] = useState();
+  const [ loading ] = useFetchHook(fetchAllVisits());
+  const { visits } = useSelector((state) => state.patient);
 
   const [ filterFunc, setFilterFunc ] = useState({
     func: (items) => {
@@ -59,7 +63,7 @@ export default function Visits() {
   });
 
   const { TableContainer, TableHeader, TablePagination, recordsAfterSorting } = useTable(
-    visit,
+    visits,
     headCells,
     filterFunc
   );
@@ -75,75 +79,56 @@ export default function Visits() {
     });
   };
 
-  const getVisits = async () => {
-    setLoading(true);
-    try {
-      const result = await kfshAPI.getVisits(mrn);
-      setVisit((prev) => [ ...prev, ...result ]);
-     } catch (error) {
-      await dispatch(addAlert(error, 'error'));
-    }
-    setLoading(false);
-  };
 
-  // const getDetails = useCallback(
-  //   () => {
-  //     const res = visit.map( (info) => (
-  //       Promise.all([
-  //          kfshAPI.getUser(info.user_id),
-  //          kfshAPI.getSinglePhysician(info.physician_id),
-  //          kfshAPI.getProcedure(info.procedure_id),
-  //          kfshAPI.getLocation(info.location_id),
-  //          kfshAPI.getPatient(info.patient_mrn),
-  //        ])).then(res => setDetails(res))
-  //      )
-  //   },
-  //   [],
-  // )
-
-
-  useEffect(() => {
-    getVisits();
-    // getDetails();
-  }, []);
+  { if (!loading && visits.length === 0) return <h1>NO LOGS FOUND</h1>}
 
 
   return (
-    <div>
-      <PageHeader
-        title='View Patient Visits'
-        subtitle='Neurophysiology Department'
-        icon={<LocalHospitalIcon fontSize='large' />}
-      />
-      <Paper className={classes.pageContent}>
-        {!loading && (
+    !loading && (
+      <div>
+        <PageHeader
+          title='View Logbook'
+          subtitle="Neurophysiology Department"
+          icon={<MenuBook fontSize='large' />}
+        />
+
+        <Paper className={classes.pageContent}>
           <React.Fragment>
-            <TableContainer>
+            <TableContainer size="small">
               <TableHeader />
 
               <TableBody>
                 {recordsAfterSorting().map((item) => (
-                  <TableRow key={item.log_num}>
-                   
+                  <TableRow
+                    className={classes.link}
+                    key={item.log_num}
+                    component={Link}
+                    to={`/visits/${item.patient_mrn}/${item.log_num}`}>
+
+                    <TableCell>{formatDate(item.visit_date)}</TableCell>
+                    <TableCell>{item.patient_mrn}</TableCell>
+                    <TableCell>
+                      {item.p_firstname} {item.p_middlename} {item.p_lastname}
+                    </TableCell>
+                    <TableCell>{item.procedure_name}</TableCell>
+                    <TableCell>{item.location_name}</TableCell>
+                    <TableCell>
+                      {item.firstname} {item.lastname}
+                    </TableCell>
+                    <TableCell>
+                      {item.user_firstname} {item.user_lastname}
+                    </TableCell>
                     <TableCell>{item.log_num}</TableCell>
                     <TableCell>{item.ped_log_num}</TableCell>
-                    <TableCell>{item.patient_mrn}</TableCell>
-                    <TableCell>{item.procedure_id}</TableCell>
-                    <TableCell>{item.physician_id}</TableCell>
-                    <TableCell>{item.user_id}</TableCell>
-                    <TableCell>{formatDate(item.visit_date)}</TableCell>
-                    <TableCell>{item.location_id}</TableCell>
-                  
                   </TableRow>
                 ))}
-                
               </TableBody>
             </TableContainer>
 
             <TablePagination />
           </React.Fragment>
-        )}
-      </Paper>
-    </div>
+        </Paper>
+      </div>
+    )
   );
 }

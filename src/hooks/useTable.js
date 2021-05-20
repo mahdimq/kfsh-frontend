@@ -15,12 +15,13 @@ const useStyles = makeStyles((theme) => ({
     '& thead th': {
       fontWeight: '600',
       color: theme.palette.primary.main,
-      backgroundColor: '#faf7f0'
+      backgroundColor: '#faf7f0',
       // backgroundColor: '#f7f7fa'
       // backgroundColor: theme.palette.primary.light
     },
     '& tbody td': {
-      fontWeight: '300'
+      fontWeight: '300',
+      // fontSize: '0.75em'
     },
     '& tbody tr:hover': {
       backgroundColor: '#fffbf2',
@@ -78,8 +79,8 @@ export default function useTable(records, headCells, filterFunc) {
     setOrderBy(cellId);
   };
 
-  const TableContainer = ({ children }) => (
-    <Table className={classes.table}>{children}</Table>
+  const TableContainer = ({ children, size=null }) => (
+    <Table size={size} className={classes.table}>{children}</Table>
   );
   const TableHeader = () => (
     <TableHead>

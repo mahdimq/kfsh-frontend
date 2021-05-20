@@ -20,7 +20,7 @@ import Input from '../../hooks/controls/Input';
 
 import { formatDate, age } from '../../helpers/dateFormatter';
 import ProcedureForm from './ProcedureForm';
-import { useFetchHook } from '../../helpers/useFetch';
+import { useFetchHook } from '../../hooks/useFetch';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -54,7 +54,6 @@ export default function Procedures() {
   );
 
   const handleSearch = (e) => {
-    // e.preventDefault();
     const target = e.target;
     setFilterFunc({
       func: (items) => {
@@ -62,7 +61,6 @@ export default function Procedures() {
         else
           return items.filter(
             (x) => JSON.stringify(x.mrn).includes(target.value)
-            // x.firstname.toLowerCase().includes(target.value.toLowerCase())
           );
       }
     });

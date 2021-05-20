@@ -22,7 +22,7 @@ const initialValues = {
   nationality: ''
 };
 
-export default function PatientForm() {
+export default function PatientForm({addOrEdit}) {
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -55,18 +55,20 @@ export default function PatientForm() {
   );
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (validation()) {
-      try {
-        await dispatch(addPatient(formData));
-        // history.goBack();
-      } catch (err) {
-        dispatch(addAlert(err, 'error'))
-          // err.forEach(element => dispatch(addAlert(element, 'error')));
-        }
-      }
-      handleReset();
+      // try {
+      //   await dispatch(addPatient(formData));
+      //   // history.goBack();
+      // } catch (err) {
+      //   dispatch(addAlert(err, 'error'))
+      //     // err.forEach(element => dispatch(addAlert(element, 'error')));
+      //   }
+      // }
+      // handleReset();
+      addOrEdit(formData, handleReset)
   };
+}
 
   const genderItems = [
     { id: 'male', title: 'Male' },

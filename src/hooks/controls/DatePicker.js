@@ -19,7 +19,7 @@ export default function DatePicker({ name, label, value, onChange }) {
         disableFuture
         openTo="year"
         format="dd-MMM-yyyy"
-        label="Date of birth"
+        label={label}
         views={["year", "month", "date"]}
         value={value}
         onChange={(date) => onChange(convertToDefaultEvent(name, date))}

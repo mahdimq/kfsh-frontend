@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 // import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { registerUser, addAlert } from '../../actions/actions';
@@ -42,10 +42,8 @@ const initialValues = {
   is_admin: false
 };
 
-export default function SignUp() {
+export default function SignUp({ addOrEdit, recordForEdit }) {
   const classes = useStyles();
-
-  // const history = useHistory();
   const dispatch = useDispatch();
 
   const validation = (fieldValues = formData) => {
@@ -71,19 +69,23 @@ export default function SignUp() {
   );
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    // e.preventDefault();
     if (validation()) {
       try {
-        await dispatch(registerUser(formData));
-        // history.goBack();
+        addOrEdit(formData, handleReset);
       } catch (err) {
-        err.forEach((error) => {
-          dispatch(addAlert(error, 'error'));
-        });
+        dispatch(addAlert(err, 'error'));
       }
-      handleReset();
+      // handleReset();
     }
   };
+
+  // useEffect(
+  //   () => {
+  //     if (recordForEdit !== null) setFormData({ ...recordForEdit, password: "" });
+  //   },
+  //   [ recordForEdit ]
+  // );
 
   return (
     <Container component='main' maxWidth='xs'>
@@ -97,7 +99,6 @@ export default function SignUp() {
         </Typography>
       </div>
 
-      {/* <form className={classes.form} onSubmit={handleSubmit} noValidate> */}
       <Form onSubmit={handleSubmit}>
         <Grid container spacing={2}>
           <Grid item xs={12} sm={6}>

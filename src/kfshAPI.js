@@ -125,13 +125,13 @@ class kfshAPI {
 		return res;
 	}
 
-  static async addTest(data) {
-		let res = await this.request(`tests/`, data, 'post');
+  static async addTestCodes(data) {
+		let res = await this.request(`testCodes/`, data, 'post');
 		return res;
 	}
 
-	static async getTests() {
-		let res = await this.request(`tests`);
+	static async getTestCodes() {
+		let res = await this.request(`testCodes`);
 		return res;
 	}
 
@@ -150,8 +150,8 @@ class kfshAPI {
 		return res;
 	}
 
-	static async deleteTest(test_id, data) {
-		let res = await this.request(`tests/${test_id}/`, data, 'delete');
+	static async deleteTestCode(test_id, data) {
+		let res = await this.request(`testCodes/${test_id}/`, data, 'delete');
 		return res;
 	}
 
@@ -187,9 +187,28 @@ class kfshAPI {
 	// ########################################################
 	// ##################### VISIT ENDPOINTS ###################
 	// ########################################################
-	// GET ALL VISITS
+	// GET ALL VISITS FOR A SINGLE PATIENT
   static async getVisits(mrn) {
 		const result = await this.request(`visits/${mrn}`);
+		return result;
+	}
+
+  static async getAllVisits() {
+		const result = await this.request(`visits/`);
+		return result;
+	}
+
+	// ########################################################
+	// ##################### VISITTEST ENDPOINTS ###################
+	// ########################################################
+	// GET ALL VISITS FOR A SINGLE PATIENT
+  static async getVisitTest(log) {
+		const result = await this.request(`visitstests/${log}`);
+		return result;
+	}
+
+  static async getVisitTests() {
+		const result = await this.request(`visitstests/`);
 		return result;
 	}
 }

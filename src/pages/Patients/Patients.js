@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import PageHeader from '../../components/PageHeader';
-import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
-import { Search } from '@material-ui/icons';
+import { Add, Apartment, Search } from '@material-ui/icons';
 import {
   InputAdornment,
   makeStyles,
@@ -14,22 +13,36 @@ import {
 import useTable from '../../hooks/useTable';
 import Input from '../../hooks/controls/Input';
 import PatientForm from './PatientForm';
-import { useFetchHook } from '../../helpers/useFetch';
+import { useFetchHook } from '../../hooks/useFetch';
 
 import { formatDate, age } from '../../helpers/dateFormatter';
-
 import { useSelector } from 'react-redux';
 import { getAllPatients } from '../../actions/actions';
-import { useParams } from 'react-router';
-import {Link} from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import Popup from '../../components/Popup';
+import Button from '../../hooks/controls/Button';
+import { useDispatch } from 'react-redux';
+import { addPatient, addAlert } from '../../actions/actions';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
     margin: theme.spacing(5),
-    padding: theme.spacing(5)
+    padding: theme.spacing(5),
+    textTransform:'capitalize'
   },
   searchInput: {
     width: '60%'
+  },
+  link: {
+    textDecoration: 'none',
+    color: 'inherit',
+    '&:hover': {
+      backgroundColor: '#fffbf2 !important'
+    },
+  },
+  newButton: {
+    position: 'absolute',
+    right: '10px'
   }
 }));
 
@@ -44,8 +57,10 @@ const headCells = [
 ];
 
 function Patients() {
-  const {mrn} = useParams();
+  const dispatch = useDispatch();
+  // const { mrn } = useParams();
   const classes = useStyles();
+  const [ openPopup, setOpenPopup ] = useState(false);
   const [ loading ] = useFetchHook(getAllPatients());
   const [ filterFunc, setFilterFunc ] = useState({
     func: (items) => {
@@ -67,10 +82,7 @@ function Patients() {
     setFilterFunc({
       func: (items) => {
         if (target.value === '') return items;
-        else
-          return items.filter(
-            (x) => JSON.stringify(x.mrn).includes(target.value)
-          );
+        else return items.filter((x) => JSON.stringify(x.mrn).includes(target.value));
       }
     });
   };
@@ -79,39 +91,63 @@ function Patients() {
     loading && <h1>LOADING Patients...</h1>;
   }
 
-  return (
-    <div>
-      <PageHeader
-        title='View Patients'
-        subtitle='Neurophysiology Department'
-        icon={<LocalHospitalIcon fontSize='large' />}
-      />
-      <Paper className={classes.pageContent}>
-        <Toolbar>
-          <Input
-            className={classes.searchInput}
-            label='Search MRN'
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position='start'>
-                  <Search />
-                </InputAdornment>
-              )
-            }}
-            onChange={handleSearch}
-          />
-        </Toolbar>
+  const addOrEdit = (patient, handleReset) => {
+    async function get() {
+      try {
+        await dispatch(addPatient(patient));
+        // history.goBack();
+      } catch (err) {
+        dispatch(addAlert(err, 'error'));
+      }
+    }
+    get();
+    handleReset();
+    setOpenPopup(false);
+  };
 
-        {/* <PatientForm /> */}
-        
-        {!loading && (
+  return (
+    !loading && (
+      <div>
+        <PageHeader
+          title='View Patients'
+          subtitle='Neurophysiology Department'
+          icon={<Apartment fontSize='large' />}
+        />
+        <Paper className={classes.pageContent}>
+          <Toolbar>
+            <Input
+              className={classes.searchInput}
+              label='Search MRN'
+              type='number'
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <Search />
+                  </InputAdornment>
+                )
+              }}
+              onChange={handleSearch}
+            />
+            <Button
+              label='Add New Patient'
+              variant='outlined'
+              startIcon={<Add />}
+              className={classes.newButton}
+              onClick={() => setOpenPopup(true)}
+            />
+          </Toolbar>
+
           <React.Fragment>
             <TableContainer>
               <TableHeader />
 
               <TableBody>
                 {recordsAfterSorting().map((item) => (
-                  <TableRow key={item.mrn} component={Link} to={`/visits/${item.mrn}`}>
+                  <TableRow
+                    className={classes.link}
+                    key={item.mrn}
+                    component={Link}
+                    to={`/visits/${item.mrn}`}>
                     <TableCell>{item.mrn}</TableCell>
                     <TableCell>
                       {item.firstname} {item.middlename} {item.lastname}
@@ -130,9 +166,12 @@ function Patients() {
 
             <TablePagination />
           </React.Fragment>
-        )}
-      </Paper>
-    </div>
+        </Paper>
+        <Popup openPopup={openPopup} setOpenPopup={setOpenPopup} title='Add New Patient'>
+          <PatientForm addOrEdit={addOrEdit} />
+        </Popup>
+      </div>
+    )
   );
 }
 

@@ -19,7 +19,6 @@ export function useForm(initialValues, validateOnChange = false, validation) {
     const value = target.type === 'number' ? parseInt(target.value) : target.value;
     // const value = target.type === 'checkbox' ? target.checked : target.value;
     const name = target.name;
-    // const { name, value } = e.target;
     setFormData({
       ...formData,
       [name]: value

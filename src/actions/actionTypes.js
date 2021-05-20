@@ -28,3 +28,9 @@ export const GET_VISITS = 'GET_VISITS';
 export const GET_VISIT = 'GET_VISIT';
 export const ADD_VISIT = 'ADD_VISIT';
 export const DELETE_VISIT = 'DELETE_VISIT';
+// VisitTest Actions
+export const FETCH_VISITTESTS = 'FETCH_VISITTESTS';
+export const FETCH_VISITTEST = 'FETCH_VISITTEST';
+export const ADD_VISITTEST = 'ADD_VISITTEST';
+export const DELETE_VISITTEST = 'DELETE_VISITTEST';
+

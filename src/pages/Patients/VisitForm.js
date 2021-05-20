@@ -19,12 +19,11 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const initialValues = {
-  patient_mrn: '',
-  physician_id: '',
-  use_id: '',
+  log_num: '',
+  ped_log_num: '',
   location_id: '',
-  visit_date: new Date(),
-  status: ''
+  procedure_id: '',
+  visit_date: new Date()
 };
 
 export default function VisitForm() {
@@ -32,27 +31,19 @@ export default function VisitForm() {
   const history = useHistory();
   const dispatch = useDispatch();
 
-  // const validation = (fieldValues = formData) => {
-  //   const temp = { ...errors };
-  //   if ('mrn' in fieldValues)
-  //     temp.mrn = formData.mrn.length !== 0 ? '' : 'Patient MRN is required';
-  //   if ('firstname' in fieldValues)
-  //     temp.firstname = formData.firstname ? '' : 'First Name is required';
-  //   if ('middlename' in fieldValues)
-  //     temp.middlename = formData.middlename ? '' : 'Middle Name is required';
-  //   if ('lastname' in fieldValues)
-  //     temp.lastname = formData.lastname ? '' : 'Last Name is required';
-  //   if ('gender' in fieldValues)
-  //     temp.gender = formData.gender ? '' : 'Please select gender';
-  //   if ('dob' in fieldValues) temp.dob = formData.dob ? '' : 'Please enter Date of Birth';
-  //   if ('nationality' in fieldValues)
-  //     temp.nationality = formData.nationality ? '' : 'Please select nationality';
-  //   if ('age_group' in fieldValues)
-  //     temp.age_group = formData.age_group ? '' : 'Please select age group';
+  const validation = (fieldValues = formData) => {
+    const temp = { ...errors };
+    if ('log_num' in fieldValues)
+      temp.log_num = formData.log_num ? '' : 'NPL Number is required';
+    if ('procedure_id' in fieldValues)
+      temp.procedure_id = formData.procedure_id ? '' : 'Procedure is required';
+    if ('location_id' in fieldValues)
+      temp.location_id = formData.location_id ? '' : 'Location is required';
+    if ('visit_date' in fieldValues) temp.visit_date = formData.visit_date ? '' : 'Please enter Date of Procedure';
 
-  //   setErrors({ ...temp });
-  //   if (fieldValues === formData) return Object.values(temp).every((i) => i === '');
-  // };
+    setErrors({ ...temp });
+    if (fieldValues === formData) return Object.values(temp).every((i) => i === '');
+  };
 
   const { formData, handleReset, handleChange, errors, setErrors, setFormData } = useForm(
     initialValues,
@@ -73,22 +64,23 @@ export default function VisitForm() {
     // }
     // handleReset();
     // }
+    console.log("LOCATION ID: ", formData.location_id)
+    console.log("PROCEDURE ID: ", formData.procedure_id)
     window.alert('Clicked submit');
   };
 
-  const genderItems = [
-    { id: 'male', title: 'Male' },
-    { id: 'female', title: 'Female' }
+  const procedureItems = [
+    { id: 1, title: 'EEG' },
+    { id: 2, title: 'NCS' },
+    { id: 3, title: 'EMG' },
+    { id: 4, title: 'SSEP' },
   ];
-
-  const ageGroupItems = [
-    { id: 'adult', title: 'Adult' },
-    { id: 'pediatric', title: 'Pediatric' }
-  ];
-
-  const nationalityItems = [
-    { id: 'saudi', title: 'Saudi' },
-    { id: 'non-saudi', title: 'Non-Saudi' }
+  const locationItems = [
+    { id: 1, title: 'NPL' },
+    { id: 2, title: 'AICU' },
+    { id: 3, title: 'B1' },
+    { id: 4, title: 'OR' },
+    { id: 5, title: 'ER' }
   ];
 
   return (
@@ -97,95 +89,56 @@ export default function VisitForm() {
         <Grid container spacing={3}>
           <Grid item md={6} sm={8} xs={12}>
             <Input
-              name='mrn'
-              label='Patient MRN'
-              value={formData.mrn}
+              name='log_num'
+              label='NPL Number'
+              value={formData.log_num}
               onChange={handleChange}
-              id='mrn'
+              id='log_num'
               required
-              type='number'
-              error={errors.mrn}
+              error={errors.log_num}
             />
           </Grid>
 
-          <Grid item md={4}>
-            <RadioButton
-              name='gender'
-              label='Gender'
-              value={formData.gender}
-              onChange={handleChange}
-              items={genderItems}
-              error={errors.gender}
-              default='male'
-            />
-          </Grid>
-        </Grid>
-
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={4}>
+          <Grid item md={6} sm={8} xs={12}>
             <Input
-              name='firstname'
-              label='First Name'
-              value={formData.firstname}
+              name='ped_log_num'
+              label='P-NPL Number'
+              value={formData.ped_log_num}
               onChange={handleChange}
-              id='firstname'
-              required
-              error={errors.firstname}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              name='middlename'
-              label='Middle Name'
-              value={formData.middlename}
-              onChange={handleChange}
-              id='middlename'
-              required
-              error={errors.middlename}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={4}>
-            <Input
-              name='lastname'
-              label='Last Name'
-              value={formData.lastname}
-              onChange={handleChange}
-              id='lastname'
-              required
-              error={errors.lastname}
-            />
-          </Grid>
-
-          <Grid item xs={12} sm={6} md={4}>
-            <DatePicker
-              name='dob'
-              label='Date of Birth'
-              value={formData.dob}
-              onChange={handleChange}
-              error={errors.dob}
+              id='ped_log_num'
+              default={null}
             />
           </Grid>
 
           <Grid item xs={12} sm={6} md={4}>
             <Select
-              name='nationality'
-              label='Nationality'
-              options={nationalityItems}
-              value={formData.nationality}
+              name='procedure_id'
+              label='Procedure'
+              options={procedureItems}
+              value={formData.procedure_id}
               onChange={handleChange}
-              error={errors.nationality}
+              error={errors.procedure_id}
             />
           </Grid>
 
           <Grid item xs={12} sm={6} md={4}>
-            <RadioButton
-              name='age_group'
-              label='Age Group'
-              value={formData.age_group}
+            <Select
+              name='location_id'
+              label='Location'
+              options={locationItems}
+              value={formData.location_id}
               onChange={handleChange}
-              items={ageGroupItems}
-              error={errors.age_group}
-              default='adult'
+              error={errors.location_id}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={4}>
+            <DatePicker
+              name='visit_date'
+              label='Date of Procedure'
+              value={formData.visit_date}
+              onChange={handleChange}
+              error={errors.visit_date}
             />
           </Grid>
         </Grid>

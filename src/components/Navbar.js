@@ -28,7 +28,8 @@ import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import GroupIcon from '@material-ui/icons/Group';
 import MenuIcon from '@material-ui/icons/Menu';
-
+import ApartmentIcon from '@material-ui/icons/Apartment';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -74,8 +75,6 @@ export default function Navbar() {
   const [ anchorEl, setAnchorEl ] = useState(null);
   const [ mobileMoreAnchorEl, setMobileMoreAnchorEl ] = useState(null);
 
-  // const [search, setSearch] = useState('');
-  // const navLinks = useRef(null);
   const user = useSelector((state) => state.user);
   const dispatch = useDispatch();
 
@@ -144,7 +143,6 @@ export default function Navbar() {
         transformOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={isMobileMenuOpen}
         onClose={handleMobileMenuClose}>
-
         {user.token && (
           <MenuItem>
             <Typography variant='h6' className={classes.mobileName} noWrap>
@@ -153,7 +151,7 @@ export default function Navbar() {
           </MenuItem>
         )}
 
-      {/* Support Card */}
+        {/* Support Card */}
         <MenuItem>
           <Card>
             <CardContent>
@@ -168,13 +166,13 @@ export default function Navbar() {
           </Card>
         </MenuItem>
 
-      {/* Users & Admin icons */}
+        {/* Users & Admin icons */}
         {user.token &&
         user.is_admin && (
-          <>
+          <React.Fragment>
             <MenuItem>
               <IconButton className={classes.icon} aria-label='Users'>
-                <GroupIcon />
+                <GroupIcon fontSize="small"/>
               </IconButton>
               <Button size='small'>
                 <Link style={{ textDecoration: 'none', color: 'black' }} to='/users'>
@@ -185,7 +183,7 @@ export default function Navbar() {
 
             <MenuItem>
               <IconButton className={classes.icon} aria-label='Admin Menu'>
-                <SettingsIcon />
+                <SettingsIcon fontSize="small"/>
               </IconButton>
               <Button size='small'>
                 <Link style={{ textDecoration: 'none', color: 'black' }} to='/admin'>
@@ -193,36 +191,47 @@ export default function Navbar() {
                 </Link>
               </Button>
             </MenuItem>
-          </>
+          </React.Fragment>
         )}
 
-      {/* Patients, Login/Logout Icons */}
+        {/* Patients, Login/Logout Icons */}
         {user.token ? (
-        <>
-          <MenuItem>
-          <IconButton className={classes.icon} aria-label='Patients'>
-            <LocalHospitalIcon fontSize='small' />
-          </IconButton>
-          <Button>
-            <Link style={{ textDecoration: 'none', color: 'black' }} to='/patients'>
-              Patients
-            </Link>
-          </Button>
-        </MenuItem>
+          <React.Fragment>
+            <MenuItem>
+              <IconButton className={classes.icon} aria-label='Patients'>
+                <ApartmentIcon fontSize='small' />
+              </IconButton>
+              <Button size="small">
+                <Link style={{ textDecoration: 'none', color: 'black' }} to='/patients'>
+                  Patients
+                </Link>
+              </Button>
+            </MenuItem>
 
-          <MenuItem>
-            <IconButton className={classes.icon} aria-label='Logout'>
-              <ExitToAppIcon />
-            </IconButton>
-            <Button size='small' onClick={handleLogout}>
-              Logout
-            </Button>
-          </MenuItem>
-        </>
+            <MenuItem>
+              <IconButton className={classes.icon} aria-label='logbook'>
+                <MenuBookIcon fontSize='small' />
+              </IconButton>
+              <Button size="small">
+                <Link style={{ textDecoration: 'none', color: 'black' }} to='/visits'>
+                  Logbook
+                </Link>
+              </Button>
+            </MenuItem>
+
+            <MenuItem>
+              <IconButton className={classes.icon} aria-label='Logout'>
+                <ExitToAppIcon fontSize='small'/>
+              </IconButton>
+              <Button size="small" onClick={handleLogout}>
+                Logout
+              </Button>
+            </MenuItem>
+          </React.Fragment>
         ) : (
           <MenuItem>
             <IconButton className={classes.icon} aria-label='Login'>
-              <PowerSettingsNewIcon />
+              <PowerSettingsNewIcon fontSize="small" />
             </IconButton>
             <Button size='small'>
               <Link style={{ textDecoration: 'none', color: 'black' }} to='/login'>
@@ -252,16 +261,24 @@ export default function Navbar() {
 
             <Grid item className={classes.desktop}>
               {user.token && (
-                <Link to='/patients'>
-                  <IconButton aria-label='add patient'>
-                    <LocalHospitalIcon fontSize='small' />
-                  </IconButton>
-                </Link>
+                <React.Fragment>
+                  <Link to='/patients'>
+                    <IconButton aria-label='patient'>
+                      <ApartmentIcon fontSize='small' />
+                    </IconButton>
+                  </Link>
+
+                  <Link to='/visits'>
+                    <IconButton aria-label='logbook'>
+                      <MenuBookIcon fontSize='small' />
+                    </IconButton>
+                  </Link>
+                </React.Fragment>
               )}
 
               {user.token &&
               user.is_admin && (
-                <>
+                <React.Fragment>
                   <Link to='/users'>
                     <IconButton aria-label='Users'>
                       <GroupIcon fontSize='small' />
@@ -273,7 +290,7 @@ export default function Navbar() {
                       <SettingsIcon fontSize='small' />
                     </IconButton>
                   </Link>
-                </>
+                </React.Fragment>
               )}
 
               {/* Support button  */}
@@ -311,7 +328,7 @@ export default function Navbar() {
         </Toolbar>
 
         {/* MOBILE SECTION */}
-  
+
         {renderMobileMenu(user.firstname)}
       </AppBar>
     </div>

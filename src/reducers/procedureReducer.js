@@ -15,6 +15,7 @@ function procedureReducer(state = INITIAL_STATE, action) {
     case GET_SINGLE_PROCEDURE:
       return { ...state, ...action.payload };
 
+      // CHECK IF THIS IS NEEDED
     case GET_ALL_PROCEDURES:
       return { ...state, procedures: action.payload };
 

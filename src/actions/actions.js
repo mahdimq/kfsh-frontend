@@ -22,7 +22,10 @@ import {
   GET_VISITS,
   GET_VISIT,
   ADD_VISIT,
-  DELETE_VISIT
+  DELETE_VISIT,
+  FETCH_VISITTESTS,
+  FETCH_VISITTEST,
+  ADD_VISITTEST
 } from './actionTypes';
 
 import kfshAPI from '../kfshAPI';
@@ -135,7 +138,7 @@ export const registerUser = (data) => {
       const user = await kfshAPI.register(data);
       // localStorage.setItem('user-token', user.token);
       await dispatch(userRegistered(user));
-      await dispatch(
+      dispatch(
         addAlert(
           `Registration Successful! ${data.firstname}'s account has been created!`,
           'success'
@@ -158,12 +161,9 @@ export const removeUser = (id, token) => {
   return async function(dispatch) {
     try {
       await kfshAPI.deleteUser(id, token);
-      dispatch(addAlert(`User with ID: ${id} has been deleted`, 'error'));
       await dispatch(logout());
     } catch (err) {
-      err.forEach((error) => {
-        dispatch(addAlert(error, 'error'));
-      });
+      await dispatch(addAlert(err, 'error'));
     }
   };
 };
@@ -173,7 +173,7 @@ export const removeUser = (id, token) => {
 export const logoutUser = () => {
   return async function(dispatch) {
     await dispatch(logout());
-    await dispatch(addAlert('User logged out', 'warning'));
+    dispatch(addAlert('User logged out', 'warning'));
   };
 };
 export const logout = () => {
@@ -431,13 +431,13 @@ export const removeProcedure = (mrn, token) => {
 // ############# VISIT STATE MANAGEMENT ###############
 // ########################################################
 
-// // RETRIEVE VISITS FROM DATABASE
+// // RETRIEVE ALL VISITS FOR SINGLE PATIENT
 export const fetchVisits = (mrn) => {
 	return async function (dispatch) {
 		try {
 			const res = await kfshAPI.getVisits(mrn);
 			if (!res) await dispatch(addAlert('NO VISITS FOUND', 'warning'));
-			await dispatch(gotVisits(res));
+			await dispatch(gotVisit(res));
 		} catch (err) {
 			err.forEach((error) => {
 				dispatch(addAlert(error, 'error'));
@@ -446,20 +446,23 @@ export const fetchVisits = (mrn) => {
 	};
 };
 
-const gotVisits = (data) => {
-	return { type: GET_VISITS, payload: data};
-};
 
-export const getVisitInfo = (mrn) => {
+// RETRIEVE ALL PATIENTS VISITS FROM DB
+export const fetchAllVisits = () => {
   return async function(dispatch) {
-    const res = await kfshAPI.getVisits(mrn);
-    await dispatch(gotVisiting(res));
+    const res = await kfshAPI.getAllVisits();
+    await dispatch(gotVisits(res));
   };
 };
 
-// got Patient
-const gotVisiting = (mrn) => {
-  return { type: GET_VISITS, payload: mrn };
+// got visits
+const gotVisits = (data) => {
+  return { type: GET_VISITS, payload: data};
+};
+
+// got visits
+const gotVisit = (data) => {
+  return { type: GET_VISIT, payload: data};
 };
 
 // // REMOVE FROM WATCHLIST
@@ -475,3 +478,33 @@ const gotVisiting = (mrn) => {
 // const removedWatchlist = (movie_id) => {
 // 	return { type: REMOVE_WATCHLIST, payload: movie_id };
 // };
+
+
+// ########################################################
+// ############# VISIT TEST STATE MANAGEMENT ###############
+// ########################################################
+// GET VISIT DETAILS FOR PATIENT FROM DATABASE
+export const fetchVisitTest = (log) => {
+  return async function(dispatch) {
+    const res = await kfshAPI.getVisitTest(log);
+    await dispatch(gotVisitTest(res));
+  };
+};
+
+// GET VISIT DETAILS FOR ALL PATIENTS
+export const fetchVisitTests = () => {
+  return async function(dispatch) {
+    const res = await kfshAPI.getVisitTests();
+    await dispatch(gotVisitTests(res));
+  };
+};
+
+// got visits
+const gotVisitTests = (data) => {
+  return { type: FETCH_VISITTESTS, payload: data};
+};
+
+// got visits
+const gotVisitTest = (data) => {
+  return { type: FETCH_VISITTEST, payload: data};
+};

@@ -10,15 +10,15 @@ const useStyles = makeStyles((theme) => ({
 	root: {
 		width: '100%',
 		'& > * + *': {
-			marginTop: theme.spacing(2)
+			marginTop: theme.spacing(2),
 		}
 	}
 }));
 
 function Alerts() {
+	const classes = useStyles();
 	const dispatch = useDispatch();
 	const alerts = useSelector((state) => state.alerts);
-	const classes = useStyles();
 
 	useEffect(() => {
 		if (alerts[0]) {

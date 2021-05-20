@@ -17,7 +17,6 @@ function patientReducer(state = INITIAL_STATE, action) {
     case ADD_PATIENT:
       return action.payload;
 
-    case GET_VISIT:
     case FETCH_PATIENT_INFO:
     case UPDATE_PATIENT:
       return { ...state, ...action.payload };
@@ -27,6 +26,9 @@ function patientReducer(state = INITIAL_STATE, action) {
 
     case GET_VISITS:
       return { ...state, visits: action.payload };
+
+    case GET_VISIT:
+      return {...state, visit: action.payload}
 
     case DELETE_VISIT:
       return INITIAL_STATE;
