@@ -69,10 +69,11 @@ export default function SignUp({ addOrEdit, recordForEdit }) {
   );
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     if (validation()) {
       try {
-        addOrEdit(formData, handleReset);
+        // addOrEdit(formData, handleReset);
+        await dispatch(registerUser(formData))
       } catch (err) {
         dispatch(addAlert(err, 'error'));
       }

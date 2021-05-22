@@ -26,12 +26,11 @@ function Home() {
         <h1>KFSH Neurophysiology</h1>
         <h2>Clinical Data Management</h2>
         <h2>Intuitive. Beautiful. Simple.</h2>
-      </div>
 
       {user.token ? (
         <h3 style={{ color: 'blue', textAlign: 'center' }}>Welcome Back {user.firstname}!</h3>
-      ) : (
-        <Button
+        ) : (
+          <Button
           onClick={() => history.push('/login')}
           variant='contained'
           size='large'
@@ -40,6 +39,7 @@ function Home() {
           Login
         </Button>
       )}
+      </div>
     </Container>
   );
 }

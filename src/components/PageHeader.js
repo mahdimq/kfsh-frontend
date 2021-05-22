@@ -11,7 +11,8 @@ const useStyles = makeStyles(theme =>({
     padding: theme.spacing(4),
     display: 'flex',
     // marginBottom: theme.spacing(2)
-    margin: theme.spacing(0, 10, 2)
+    margin: theme.spacing(0, 10, 0)
+    // margin: theme.spacing(0, 10, 2)
   },
   pageIcon: {
     display: 'inline-block',

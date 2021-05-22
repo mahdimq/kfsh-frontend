@@ -1,7 +1,7 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { addAlert, addPatient } from '../../actions/actions';
+import { addAlert, addPatient, addSingleVisit, fetchVisits } from '../../actions/actions';
 
 import { Grid, makeStyles, Paper } from '@material-ui/core/';
 import { useForm, Form } from '../../hooks/useForm';
@@ -10,6 +10,7 @@ import Button from '../../hooks/controls/Button';
 import RadioButton from '../../hooks/controls/RadioButton';
 import DatePicker from '../../hooks/controls/DatePicker';
 import Select from '../../hooks/controls/Select';
+import {useParams} from 'react-router'
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -21,12 +22,16 @@ const useStyles = makeStyles((theme) => ({
 const initialValues = {
   log_num: '',
   ped_log_num: '',
-  location_id: '',
+  patient_mrn: '',
+  physician_id: '',
+  user_id: '',
   procedure_id: '',
+  location_id: '',
   visit_date: new Date()
 };
 
 export default function VisitForm() {
+  const {mrn} = useParams()
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
@@ -39,7 +44,8 @@ export default function VisitForm() {
       temp.procedure_id = formData.procedure_id ? '' : 'Procedure is required';
     if ('location_id' in fieldValues)
       temp.location_id = formData.location_id ? '' : 'Location is required';
-    if ('visit_date' in fieldValues) temp.visit_date = formData.visit_date ? '' : 'Please enter Date of Procedure';
+    if ('visit_date' in fieldValues)
+      temp.visit_date = formData.visit_date ? '' : 'Please enter Date of Procedure';
 
     setErrors({ ...temp });
     if (fieldValues === formData) return Object.values(temp).every((i) => i === '');
@@ -47,33 +53,30 @@ export default function VisitForm() {
 
   const { formData, handleReset, handleChange, errors, setErrors, setFormData } = useForm(
     initialValues,
-    true
-    // validation
+    true,
+    validation
   );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    // if (validation()) {
-    // try {
-    //   await dispatch(addPatient(formData));
-    //   // history.goBack();
-    // } catch (err) {
-    //   err.forEach((error) => {
-    //     dispatch(addAlert(error, 'error'));
-    //   });
-    // }
-    // handleReset();
-    // }
-    console.log("LOCATION ID: ", formData.location_id)
-    console.log("PROCEDURE ID: ", formData.procedure_id)
-    window.alert('Clicked submit');
+    if (validation()) {
+    try {
+      await dispatch(addSingleVisit(mrn, {...formData, patient_mrn: parseInt(mrn)}));
+      // history.goBack();
+    } catch (err) {
+      await dispatch(addAlert(err, 'error'));
+      };
+    }
+    handleReset();
+
   };
+
 
   const procedureItems = [
     { id: 1, title: 'EEG' },
     { id: 2, title: 'NCS' },
     { id: 3, title: 'EMG' },
-    { id: 4, title: 'SSEP' },
+    { id: 4, title: 'SSEP' }
   ];
   const locationItems = [
     { id: 1, title: 'NPL' },
@@ -82,12 +85,27 @@ export default function VisitForm() {
     { id: 4, title: 'OR' },
     { id: 5, title: 'ER' }
   ];
+  const userItems = [
+    { id: 1111, title: 'John Conner' },
+    { id: 2222, title: 'Zayd AbdulQadir' },
+    { id: 4444, title: 'Peter Parker' },
+    { id: 9999, title: 'Maryam AlAsil' }
+  ];
+  const physicianItems = [
+    { id: 1, title: 'Ali Mir' },
+    { id: 2, title: 'Raidah AlBaradie' },
+    { id: 3, title: 'Ziyad AlThani' },
+    { id: 4, title: 'Eman Nassim' },
+    { id: 5, title: 'Fouad AlGhamdi' },
+    { id: 6, title: 'Majed AlOtaibi' },
+    { id: 7, title: 'Mahmood Taha' }
+  ];
 
   return (
     <Paper className={classes.pageContent}>
       <Form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
-          <Grid item md={6} sm={8} xs={12}>
+          <Grid item md={6} sm={6} xs={12}>
             <Input
               name='log_num'
               label='NPL Number'
@@ -99,7 +117,7 @@ export default function VisitForm() {
             />
           </Grid>
 
-          <Grid item md={6} sm={8} xs={12}>
+          <Grid item md={6} sm={6} xs={12}>
             <Input
               name='ped_log_num'
               label='P-NPL Number'
@@ -110,6 +128,28 @@ export default function VisitForm() {
             />
           </Grid>
 
+          <Grid item xs={12} sm={6} md={4}>
+            <Select
+              name='physician_id'
+              label='Physician'
+              options={physicianItems}
+              value={parseInt(formData.physician_id)}
+              onChange={handleChange}
+              error={errors.physician_id}
+            />
+          </Grid>
+          
+          <Grid item xs={12} sm={6} md={4}>
+            <Select
+              name='user_id'
+              label='Technologist'
+              options={userItems}
+              value={parseInt(formData.user_id)}
+              onChange={handleChange}
+              error={errors.user_id}
+            />
+          </Grid>
+          
           <Grid item xs={12} sm={6} md={4}>
             <Select
               name='procedure_id'

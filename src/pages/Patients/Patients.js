@@ -138,7 +138,7 @@ function Patients() {
           </Toolbar>
 
           <React.Fragment>
-            <TableContainer>
+            <TableContainer size="small">
               <TableHeader />
 
               <TableBody>

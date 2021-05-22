@@ -88,7 +88,7 @@ export default function Visits() {
       <div>
         <PageHeader
           title='View Logbook'
-          subtitle="Neurophysiology Department"
+          subtitle={`Current Running Log: NPL#: ${visits[visits.length-1].log_num} / P-NPL#: ${visits[visits.length - 1].ped_log_num}`}
           icon={<MenuBook fontSize='large' />}
         />
 

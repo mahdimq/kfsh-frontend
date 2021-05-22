@@ -58,9 +58,11 @@ function Routes() {
         <Visit/>
       </Route>
 
+      {/* <Route exact path='/other'> */}
       <Route exact path='/visits/:mrn/:npl'>
         <VisitTest/>
       </Route>
+
 {/* 
       <Route exact path='/procedures'>
         <Procedures/>

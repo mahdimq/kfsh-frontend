@@ -446,12 +446,19 @@ export const fetchVisits = (mrn) => {
 	};
 };
 
-
 // RETRIEVE ALL PATIENTS VISITS FROM DB
 export const fetchAllVisits = () => {
   return async function(dispatch) {
     const res = await kfshAPI.getAllVisits();
     await dispatch(gotVisits(res));
+  };
+};
+
+// ADD VISIT FOR SINGLE PATIENT
+export const addSingleVisit = (mrn, data) => {
+  return async function(dispatch) {
+    const res = await kfshAPI.addVisit(mrn, data);
+    await dispatch(addedVisit(res));
   };
 };
 
@@ -464,6 +471,11 @@ const gotVisits = (data) => {
 const gotVisit = (data) => {
   return { type: GET_VISIT, payload: data};
 };
+
+// Add Visit
+const addedVisit = (data) => {
+  return {type: ADD_VISIT, payload: data}
+}
 
 // // REMOVE FROM WATCHLIST
 // export const removeWatchlist = (user_id, movie_id) => {

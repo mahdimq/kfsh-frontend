@@ -193,8 +193,15 @@ class kfshAPI {
 		return result;
 	}
 
+  // GET ALL VISITS (LOG BOOK FEATURE)
   static async getAllVisits() {
 		const result = await this.request(`visits/`);
+		return result;
+	}
+
+  // ADD VISIT FOR SINGLE PATIENT
+  static async addVisit(mrn, data) {
+		const result = await this.request(`visits/${mrn}`, data, 'post');
 		return result;
 	}
 
