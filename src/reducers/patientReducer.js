@@ -1,4 +1,5 @@
 import {
+  FETCH_PATIENT,
   FETCH_PATIENTS,
   FETCH_PATIENT_INFO,
   UPDATE_PATIENT,
@@ -23,6 +24,9 @@ function patientReducer(state = INITIAL_STATE, action) {
 
     case FETCH_PATIENTS:
       return { ...state, patients: action.payload };
+    
+      case FETCH_PATIENT:
+      return { ...state, patient: action.payload };
 
     case GET_VISITS:
       return { ...state, visits: action.payload };

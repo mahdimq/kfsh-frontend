@@ -11,13 +11,15 @@ import Admin from './Admin';
 // import Patients from './Patients';
 import Patients from '../pages/Patients/Patients';
 import HospitalForm from '../pages/Hospital/HospitalForm';
-import Procedures from '../pages/Procedures/Procedures'
-import VisitForm from '../pages/Patients/VisitForm';
+import Procedures from '../pages/Procedures/Procedures';
+import VisitForm from '../pages/Visits/VisitForm';
 import ProcedureForm from '../pages/Procedures/ProcedureForm';
 import Hospital from '../pages/Hospital/Hospital';
-import Visits from '../pages/Patients/Visits'
-import Visit from '../pages/Patients/Visit'
-import VisitTest from '../pages/Patients/VisitTest'
+import Visits from '../pages/Visits/Visits';
+import Visit from '../pages/Visits/Visit';
+import VisitDetails from '../pages/Visits/VisitDetails';
+import Patient from '../pages/Patients/Patient';
+import TestForm from '../pages/Visits/TestForm';
 
 function Routes() {
   return (
@@ -46,28 +48,30 @@ function Routes() {
         <Users />
       </Route>
 
-      <Route path='/patients'>
-        <Patients/>
+      <Route exact path='/patients'>
+        <Patients />
+      </Route>
+
+      <Route exact path='/patients/:mrn'>
+        <Patient />
       </Route>
 
       <Route exact path='/visits'>
-        <Visits/>
+        <Visits />
       </Route>
 
-      <Route exact path='/visits/:mrn'>
-        <Visit/>
+      <Route exact path='/visits/:log'>
+        <Visit />
       </Route>
 
-      {/* <Route exact path='/other'> */}
-      <Route exact path='/visits/:mrn/:npl'>
-        <VisitTest/>
+      <Route exact path='/other'>
+        <VisitDetails />
       </Route>
 
-{/* 
+      {/* 
       <Route exact path='/procedures'>
         <Procedures/>
       </Route> */}
-
 
       <Redirect to='/' />
     </Switch>

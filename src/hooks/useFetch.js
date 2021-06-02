@@ -6,7 +6,7 @@ export const useFetchHook = (endpoint) => {
   const dispatch = useDispatch();
   const [ loading, setLoading ] = useState(true);
 
-  const getData = async (endpoint) => {
+  const getData = async () => {
     setLoading(true);
 
     try {
@@ -18,7 +18,7 @@ export const useFetchHook = (endpoint) => {
   };
 
   useEffect(() => {
-    getData(endpoint)
+    getData()
   }, [])
   
   return [loading];

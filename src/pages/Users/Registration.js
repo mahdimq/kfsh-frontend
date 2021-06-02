@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { registerUser, addAlert } from '../../actions/actions';
 
-import { CssBaseline, Avatar, Typography, Grid, Container } from '@material-ui/core/';
+import { CssBaseline, Avatar, Typography, Grid, Container, Box } from '@material-ui/core/';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import { makeStyles } from '@material-ui/core/styles';
 import { useForm, Form } from '../../hooks/useForm';
@@ -14,8 +14,8 @@ import Button from '../../hooks/controls/Button';
 // function Copyright() {
 //   return (
 //     <Typography variant="body2" color="textSecondary" align="center">
-//       {'Copyright © '}KFSH Neurophysiology{' '}
-//       {new Date().getFullYear()}{'.'}
+//       Copyright © KFSH Neurophysiology {' '}
+//       {new Date().getFullYear()}
 //     </Typography>
 //   );
 // }
@@ -30,7 +30,8 @@ const useStyles = makeStyles((theme) => ({
   },
   avatar: {
     margin: theme.spacing(1),
-    backgroundColor: theme.palette.secondary.main
+    // backgroundColor: theme.palette.secondary.main
+    backgroundColor: "#253053"
   }
 }));
 
@@ -72,21 +73,15 @@ export default function SignUp({ addOrEdit, recordForEdit }) {
     e.preventDefault();
     if (validation()) {
       try {
-        // addOrEdit(formData, handleReset);
-        await dispatch(registerUser(formData))
+        addOrEdit(formData, handleReset);
+        await dispatch(registerUser(formData));
       } catch (err) {
         dispatch(addAlert(err, 'error'));
       }
-      // handleReset();
+      handleReset();
     }
   };
-
-  // useEffect(
-  //   () => {
-  //     if (recordForEdit !== null) setFormData({ ...recordForEdit, password: "" });
-  //   },
-  //   [ recordForEdit ]
-  // );
+  
 
   return (
     <Container component='main' maxWidth='xs'>
@@ -126,18 +121,20 @@ export default function SignUp({ addOrEdit, recordForEdit }) {
             />
           </Grid>
 
-          <Grid item xs={12}>
-            <Input
-              name='id'
-              label='Employee ID'
-              value={formData.id}
-              onChange={handleChange}
-              id='id'
-              required
-              type='number'
-              error={errors.id}
-            />
-          </Grid>
+          {recordForEdit ? null : (
+            <Grid item xs={12}>
+              <Input
+                name='id'
+                label='Employee ID'
+                value={formData.id}
+                onChange={handleChange}
+                id='id'
+                required
+                type='number'
+                error={errors.id}
+              />
+            </Grid>
+          )}
 
           <Grid item xs={12}>
             <Input

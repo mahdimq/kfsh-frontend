@@ -39,7 +39,9 @@ export default function VisitForm() {
   const validation = (fieldValues = formData) => {
     const temp = { ...errors };
     if ('log_num' in fieldValues)
-      temp.log_num = formData.log_num ? '' : 'NPL Number is required';
+      temp.log_num = (formData.log_num ? '' : 'NPL Number is required') || (formData.log_num.includes("P") ||  formData.log_num.includes("p") ? 'Please remove the "P" from the Log Num' : '');
+    if ('ped_log_num' in fieldValues)
+      temp.ped_log_num =  formData.ped_log_num.includes("P") ||  formData.ped_log_num.includes("p") ? '' : 'Please include the "P" before the Log Num';
     if ('procedure_id' in fieldValues)
       temp.procedure_id = formData.procedure_id ? '' : 'Procedure is required';
     if ('location_id' in fieldValues)
@@ -61,7 +63,8 @@ export default function VisitForm() {
     e.preventDefault();
     if (validation()) {
     try {
-      await dispatch(addSingleVisit(mrn, {...formData, patient_mrn: parseInt(mrn)}));
+      await dispatch(addSingleVisit(mrn, {...formData, patient_mrn: parseInt(mrn)})); 
+      // await dispatch(addSingleVisit(mrn, {...formData, patient_mrn: parseInt(mrn)})); 
       // history.goBack();
     } catch (err) {
       await dispatch(addAlert(err, 'error'));
@@ -76,7 +79,8 @@ export default function VisitForm() {
     { id: 1, title: 'EEG' },
     { id: 2, title: 'NCS' },
     { id: 3, title: 'EMG' },
-    { id: 4, title: 'SSEP' }
+    { id: 4, title: 'SSEP' },
+    { id: 5, title: 'IOM' },
   ];
   const locationItems = [
     { id: 1, title: 'NPL' },
@@ -87,8 +91,9 @@ export default function VisitForm() {
   ];
   const userItems = [
     { id: 1111, title: 'John Conner' },
-    { id: 2222, title: 'Zayd AbdulQadir' },
-    { id: 4444, title: 'Peter Parker' },
+    { id: 5566, title: 'Clark Kent' },
+    { id: 4849, title: 'Bruce Wayne' },
+    { id: 3914, title: 'Denzil Tauro' },
     { id: 9999, title: 'Maryam AlAsil' }
   ];
   const physicianItems = [
@@ -125,6 +130,7 @@ export default function VisitForm() {
               onChange={handleChange}
               id='ped_log_num'
               default={null}
+              error={errors.ped_log_num || null}
             />
           </Grid>
 
@@ -181,9 +187,33 @@ export default function VisitForm() {
               error={errors.visit_date}
             />
           </Grid>
+
+
+          <Grid item xs={12} sm={4} md={2}>
+            <Button
+              fullWidth
+              size='large'
+              label='Submit'
+              variant='outlined'
+              type='submit'
+              color='primary'
+            />
+          </Grid>
+          <Grid item xs={12} sm={4} md={2}>
+            <Button
+              fullWidth
+              size='large'
+              label='Reset'
+              variant='outlined'
+              onClick={handleReset}
+              color='default'
+            />
+          </Grid>
+
+
         </Grid>
 
-        <Grid container spacing={2}>
+        {/* <Grid container spacing={2}>
           <Grid item xs={12} sm={4} md={2}>
             <Button
               fullWidth
@@ -204,7 +234,7 @@ export default function VisitForm() {
               color='secondary'
             />
           </Grid>
-        </Grid>
+        </Grid> */}
       </Form>
     </Paper>
   );

@@ -7,19 +7,19 @@ import {
 
 const INITIAL_STATE = {};
 
-function visitTestReducer(state = INITIAL_STATE, action) {
+function visitDetailReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case ADD_VISITTEST:
       return action.payload;
 
     case FETCH_VISITTESTS:
-      return { ...state, visitTests: action.payload };
+      return { ...state, visitDetails: action.payload };
 
     // case FETCH_VISITTEST:
     //   return { ...state, ...action.payload };
 
     case FETCH_VISITTEST:
-      return {...state, visitTest: action.payload}
+      return {...state, visitDetail: action.payload}
 
     case DELETE_VISITTEST:
       return INITIAL_STATE;
@@ -29,4 +29,4 @@ function visitTestReducer(state = INITIAL_STATE, action) {
   }
 }
 
-export default visitTestReducer;
+export default visitDetailReducer;

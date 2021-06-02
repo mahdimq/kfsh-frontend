@@ -3,9 +3,12 @@ import { Card, makeStyles, Paper, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(theme =>({
   root: {
-    backgroundColor: "#faf7f0"
+    backgroundColor: "#253053",
+    // backgroundColor: "#faf7f0"
     // backgroundColor: "#f7f7fa"
-    // backgroundColor: "#fdfdff"
+    // backgroundColor: "#f4f5fd"
+    // backgroundColor: "#fdfdff",
+    color: "#faf7f0"
   },
   pageHeader: {
     padding: theme.spacing(4),
@@ -22,7 +25,7 @@ const useStyles = makeStyles(theme =>({
   pageTitle: {
     paddingLeft: theme.spacing(4),
     '& .MuiTypography-subtitle1': {
-      opacity: "0.6"
+      opacity: "0.7"
     }
   }
 }))

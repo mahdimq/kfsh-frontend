@@ -23,7 +23,7 @@ const theme = createMuiTheme({
       light: '#f8324526'
     },
     background: {
-      default: '#f4f5fd'
+      default: "#f4f5fd"
     }
   },
   // shape: {

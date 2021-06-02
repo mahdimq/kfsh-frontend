@@ -55,7 +55,7 @@ export default function PatientForm({addOrEdit}) {
   );
 
   const handleSubmit = async (e) => {
-    // e.preventDefault();
+    e.preventDefault();
     if (validation()) {
       // try {
       //   await dispatch(addPatient(formData));

@@ -33,7 +33,9 @@ import MenuBookIcon from '@material-ui/icons/MenuBook';
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
+    // backgroundColor: '#e3e3e3',
+    backgroundColor: '#e8e8e8',
     // transform: 'translateZ(0)',
     padding: theme.spacing(0, 5)
   },
@@ -118,11 +120,11 @@ export default function Navbar() {
       <MenuItem onClick={handleMenuClose}>
         <Card>
           <CardContent>
-            <Typography variant='h6' gutterBottom>
+            <Typography variant='h6' align="center" color="primary" gutterBottom>
               Support
             </Typography>
-            <Typography variant='body1'>Muhammad Qadir</Typography>
-            <Typography variant='body2' className={classes.pos} color='textSecondary'>
+            <Typography align="center" variant='body1'>Muhammad Qadir</Typography>
+            <Typography align="center" variant='body2' className={classes.pos} color='textSecondary'>
               0540540672
             </Typography>
           </CardContent>

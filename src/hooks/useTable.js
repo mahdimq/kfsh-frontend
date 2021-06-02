@@ -15,27 +15,28 @@ const useStyles = makeStyles((theme) => ({
     '& thead th': {
       fontWeight: '600',
       color: theme.palette.primary.main,
-      backgroundColor: '#faf7f0',
-      // backgroundColor: '#f7f7fa'
-      // backgroundColor: theme.palette.primary.light
+      // backgroundColor: '#faf7f0',
+      // backgroundColor: '#f7f7fa',
+      backgroundColor: theme.palette.primary.light
     },
     '& tbody td': {
       fontWeight: '300',
       // fontSize: '0.75em'
     },
     '& tbody tr:hover': {
-      backgroundColor: '#fffbf2',
-      cursor: 'pointer'
+      // backgroundColor: '#fffbf2',
+      // cursor: 'pointer'
     }
   }
 }));
 
-export default function useTable(records, headCells, filterFunc) {
+export default function useTable( headCells, filterFunc) {
   const classes = useStyles();
-  const pages = [ 5, 10, 25 ];
+  const pages = [ 25, 50, 100 ];
+  // const pages = [ 5, 10, 25 ];
   const [ page, setPage ] = useState(0);
-  const [ rowsPerPage, setRowsPerPage ] = useState(10);
-  // const [ rowsPerPage, setRowsPerPage ] = useState(pages[page]);
+  // const [ rowsPerPage, setRowsPerPage ] = useState(10);
+  const [ rowsPerPage, setRowsPerPage ] = useState(pages[page]);
   const [ order, setOrder ] = useState();
   const [ orderBy, setOrderBy ] = useState();
 
@@ -68,7 +69,7 @@ export default function useTable(records, headCells, filterFunc) {
     return stabilizedThis.map((el) => el[0]);
   };
 
-  const recordsAfterSorting = () =>
+  const recordsAfterSorting = (records) =>
     stableSort(filterFunc.func(records), getComparator(order, orderBy)).slice(
       page * rowsPerPage,
       (page + 1) * rowsPerPage
@@ -83,6 +84,7 @@ export default function useTable(records, headCells, filterFunc) {
   const TableContainer = ({ children, size=null }) => (
     <Table size={size} className={classes.table}>{children}</Table>
   );
+
   const TableHeader = () => (
     <TableHead>
       <TableRow>
@@ -104,13 +106,13 @@ export default function useTable(records, headCells, filterFunc) {
     </TableHead>
   );
 
-  const TablePagination = () => (
+  const TablePagination = ({count}) => (
     <MuiTablePagination
       component='div'
       page={page}
       rowsPerPageOptions={pages}
       rowsPerPage={rowsPerPage}
-      count={records.length}
+      count={count}
       onChangePage={handleChangePage}
       onChangeRowsPerPage={handleChangeRowsPerPage}
     />

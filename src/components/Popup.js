@@ -13,7 +13,9 @@ const useStyles = makeStyles((theme) => ({
   dialogWrapper: {
     padding: theme.spacing(2),
     position: 'absolute',
-    top: theme.spacing(5)
+    top: theme.spacing(5),
+    // temp setting for testForm
+    width: "100%"
   },
   dialogTitle: {
     paddingRight: 0

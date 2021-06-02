@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Registration from './Registration';
 import PageHeader from '../../components/PageHeader';
 import GroupIcon from '@material-ui/icons/Group';
@@ -30,12 +30,13 @@ import { useDispatch } from 'react-redux';
 import ConfirmDialog from '../../components/ConfirmDialog';
 import ActionButton from '../../hooks/controls/ActionButton';
 import Spinner from '../../components/Spinner';
+import kfshAPI from '../../kfshAPI';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
     margin: theme.spacing(5),
     padding: theme.spacing(5),
-    textTransform:'capitalize'
+    textTransform: 'capitalize'
   },
   searchInput: {
     width: '60%'
@@ -64,8 +65,9 @@ function Users() {
       return items;
     }
   });
+
   const { TableContainer, TableHeader, TablePagination, recordsAfterSorting } = useTable(
-    users,
+    // users,
     headCells,
     filterFunc
   );
@@ -101,7 +103,7 @@ function Users() {
     }
     get();
     handleReset();
-    // setRecordForEdit(null)
+    setRecordForEdit(null);
     setOpenPopup(false);
   };
 
@@ -110,6 +112,8 @@ function Users() {
   //   setOpenPopup(true)
   // };
 
+  // if (loading) {return <h1>Loading...</h1>}
+
   const handleDelete = (id) => {
     setConfirmDialog({ ...ConfirmDialog, isOpen: false });
     dispatch(removeUser(id));
@@ -117,7 +121,7 @@ function Users() {
   };
 
   {
-    loading && <Spinner />;
+    if (loading) return <Spinner />;
   }
 
   return (
@@ -155,7 +159,7 @@ function Users() {
             <TableHeader />
 
             <TableBody>
-              {recordsAfterSorting().map((item) => (
+              {recordsAfterSorting(users).map((item) => (
                 <TableRow key={item.id}>
                   <TableCell>{item.id}</TableCell>
                   <TableCell>
@@ -187,11 +191,11 @@ function Users() {
             </TableBody>
           </TableContainer>
 
-          <TablePagination />
+          <TablePagination count={users.length}/>
         </Paper>
-        
+
         <Popup openPopup={openPopup} setOpenPopup={setOpenPopup} title='Add New User'>
-          <Registration recordForEdit={recordForEdit} addOrEdit={addOrEdit} />
+          <Registration recordForEdit={recordForEdit} users={users} addOrEdit={addOrEdit} />
         </Popup>
 
         <ConfirmDialog

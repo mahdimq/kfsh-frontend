@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import PageHeader from '../../components/PageHeader';
 import { Add, Apartment, Search } from '@material-ui/icons';
 import {
@@ -14,7 +14,6 @@ import useTable from '../../hooks/useTable';
 import Input from '../../hooks/controls/Input';
 import PatientForm from './PatientForm';
 import { useFetchHook } from '../../hooks/useFetch';
-
 import { formatDate, age } from '../../helpers/dateFormatter';
 import { useSelector } from 'react-redux';
 import { getAllPatients } from '../../actions/actions';
@@ -23,12 +22,13 @@ import Popup from '../../components/Popup';
 import Button from '../../hooks/controls/Button';
 import { useDispatch } from 'react-redux';
 import { addPatient, addAlert } from '../../actions/actions';
+import Spinner from '../../components/Spinner';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
     margin: theme.spacing(5),
     padding: theme.spacing(5),
-    textTransform:'capitalize'
+    textTransform: 'capitalize'
   },
   searchInput: {
     width: '60%'
@@ -37,8 +37,10 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     color: 'inherit',
     '&:hover': {
-      backgroundColor: '#fffbf2 !important'
-    },
+      // backgroundColor: '#fffbf2 !important',
+      // backgroundColor: theme.palette.primary.light,
+      color: theme.palette.primary.main
+    }
   },
   newButton: {
     position: 'absolute',
@@ -57,27 +59,23 @@ const headCells = [
 ];
 
 function Patients() {
-  const dispatch = useDispatch();
-  // const { mrn } = useParams();
   const classes = useStyles();
-  const [ openPopup, setOpenPopup ] = useState(false);
+  const dispatch = useDispatch();
   const [ loading ] = useFetchHook(getAllPatients());
+  const { patients } = useSelector((state) => state.patient);
+  const [ openPopup, setOpenPopup ] = useState(false);
   const [ filterFunc, setFilterFunc ] = useState({
     func: (items) => {
       return items;
     }
   });
 
-  const { patients } = useSelector((state) => state.patient);
-
   const { TableContainer, TableHeader, TablePagination, recordsAfterSorting } = useTable(
-    patients,
     headCells,
     filterFunc
   );
 
   const handleSearch = (e) => {
-    // e.preventDefault();
     const target = e.target;
     setFilterFunc({
       func: (items) => {
@@ -86,10 +84,6 @@ function Patients() {
       }
     });
   };
-
-  {
-    loading && <h1>LOADING Patients...</h1>;
-  }
 
   const addOrEdit = (patient, handleReset) => {
     async function get() {
@@ -104,6 +98,10 @@ function Patients() {
     handleReset();
     setOpenPopup(false);
   };
+
+  {
+    if (loading) return <Spinner />;
+  }
 
   return (
     !loading && (
@@ -137,17 +135,24 @@ function Patients() {
             />
           </Toolbar>
 
-          <React.Fragment>
-            <TableContainer size="small">
-              <TableHeader />
+          <TableContainer size='small'>
+            <h4>Patients component</h4>
 
-              <TableBody>
-                {recordsAfterSorting().map((item) => (
+            <TableHeader />
+
+            <TableBody>
+              {patients &&
+              Object.keys(patients).length === 0 &&
+                patients.constructor === Object ? (
+                <Spinner />
+              ) : (
+                recordsAfterSorting(patients).map((item) => (
+                  // {/* {recordsAfterSorting(patients).map((item) => ( */}
                   <TableRow
                     className={classes.link}
                     key={item.mrn}
                     component={Link}
-                    to={`/visits/${item.mrn}`}>
+                    to={`/patients/${item.mrn}`}>
                     <TableCell>{item.mrn}</TableCell>
                     <TableCell>
                       {item.firstname} {item.middlename} {item.lastname}
@@ -160,12 +165,12 @@ function Patients() {
                     <TableCell>{item.age_group}</TableCell>
                     <TableCell>{item.nationality}</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </TableContainer>
+                ))
+              )}
+            </TableBody>
+          </TableContainer>
 
-            <TablePagination />
-          </React.Fragment>
+          <TablePagination count={patients.length} />
         </Paper>
         <Popup openPopup={openPopup} setOpenPopup={setOpenPopup} title='Add New Patient'>
           <PatientForm addOrEdit={addOrEdit} />

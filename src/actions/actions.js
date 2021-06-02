@@ -8,6 +8,7 @@ import {
   ADD_ALERT,
   REMOVE_ALERTS,
   GET_USER_INFO,
+  FETCH_PATIENT,
   FETCH_PATIENTS,
   FETCH_PATIENT_INFO,
   ADD_PATIENT,
@@ -241,7 +242,7 @@ export const findPatient = (mrn) => {
 };
 
 function getPatientInfo(patient) {
-  return { type: FETCH_PATIENT_INFO, payload: patient };
+  return { type: FETCH_PATIENT, payload: patient };
 }
 
 // =====================================================
@@ -432,10 +433,10 @@ export const removeProcedure = (mrn, token) => {
 // ########################################################
 
 // // RETRIEVE ALL VISITS FOR SINGLE PATIENT
-export const fetchVisits = (mrn) => {
+export const fetchVisits = (log) => {
 	return async function (dispatch) {
 		try {
-			const res = await kfshAPI.getVisits(mrn);
+			const res = await kfshAPI.getVisits(log);
 			if (!res) await dispatch(addAlert('NO VISITS FOUND', 'warning'));
 			await dispatch(gotVisit(res));
 		} catch (err) {
@@ -445,6 +446,15 @@ export const fetchVisits = (mrn) => {
 		}
 	};
 };
+
+// GET VISIT DETAILS FOR PATIENT FROM DATABASE
+export const fetchVisitDetail = (log) => {
+  return async function(dispatch) {
+    const res = await kfshAPI.getVisitDetail(log);
+    await dispatch(gotVisitDetail(res));
+  };
+};
+
 
 // RETRIEVE ALL PATIENTS VISITS FROM DB
 export const fetchAllVisits = () => {
@@ -477,46 +487,24 @@ const addedVisit = (data) => {
   return {type: ADD_VISIT, payload: data}
 }
 
-// // REMOVE FROM WATCHLIST
-// export const removeWatchlist = (user_id, movie_id) => {
-// 	return async function (dispatch) {
-// 		await kfshAPI.deleteWatchlist(user_id, movie_id);
-// 		await dispatch(removedWatchlist(movie_id));
-// 		await dispatch(addAlert('Movie removed from watchlist', 'info'));
-// 	};
-// };
-
-// // removed from watchlist
-// const removedWatchlist = (movie_id) => {
-// 	return { type: REMOVE_WATCHLIST, payload: movie_id };
-// };
-
-
 // ########################################################
 // ############# VISIT TEST STATE MANAGEMENT ###############
 // ########################################################
-// GET VISIT DETAILS FOR PATIENT FROM DATABASE
-export const fetchVisitTest = (log) => {
-  return async function(dispatch) {
-    const res = await kfshAPI.getVisitTest(log);
-    await dispatch(gotVisitTest(res));
-  };
-};
 
 // GET VISIT DETAILS FOR ALL PATIENTS
-export const fetchVisitTests = () => {
+export const fetchVisitDetails = () => {
   return async function(dispatch) {
-    const res = await kfshAPI.getVisitTests();
-    await dispatch(gotVisitTests(res));
+    const res = await kfshAPI.getVisitDetails();
+    await dispatch(gotVisitDetails(res));
   };
 };
 
 // got visits
-const gotVisitTests = (data) => {
+const gotVisitDetails = (data) => {
   return { type: FETCH_VISITTESTS, payload: data};
 };
 
 // got visits
-const gotVisitTest = (data) => {
+const gotVisitDetail = (data) => {
   return { type: FETCH_VISITTEST, payload: data};
 };

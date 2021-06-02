@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
-import { MenuBook, Search } from '@material-ui/icons';
+import { Add, MenuBook, Search } from '@material-ui/icons';
 import {
   InputAdornment,
   makeStyles,
@@ -20,6 +20,8 @@ import { useFetchHook } from '../../hooks/useFetch';
 import { addAlert, fetchAllVisits } from '../../actions/actions';
 import { useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
+import Spinner from '../../components/Spinner';
+import Button from '../../hooks/controls/Button';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -34,7 +36,9 @@ const useStyles = makeStyles((theme) => ({
     textDecoration: 'none',
     color: 'inherit',
     '&:hover': {
-      backgroundColor: '#fffbf2 !important'
+      // backgroundColor: '#fffbf2 !important'
+      backgroundColor: theme.palette.primary.light,
+      color: theme.palette.primary.main,
     }
   }
 }));
@@ -63,25 +67,24 @@ export default function Visits() {
   });
 
   const { TableContainer, TableHeader, TablePagination, recordsAfterSorting } = useTable(
-    visits,
+    // visits,
     headCells,
     filterFunc
   );
 
   const handleSearch = (e) => {
-    // e.preventDefault();
     const target = e.target;
     setFilterFunc({
       func: (items) => {
         if (target.value === '') return items;
-        else return items.filter((x) => JSON.stringify(x.mrn).includes(target.value));
+        else return items.filter((x) => JSON.stringify(x.patient_mrn).includes(target.value));
       }
     });
   };
 
 
-  { if (!loading && visits.length === 0) return <h1>NO LOGS FOUND</h1>}
-
+  // { if (!loading && visits.length === 0) return <h1>NO LOGS FOUND</h1>}
+{ if (loading) return <Spinner />}
 
   return (
     !loading && (
@@ -93,17 +96,41 @@ export default function Visits() {
         />
 
         <Paper className={classes.pageContent}>
-          <React.Fragment>
+        <Toolbar>
+            <Input
+              className={classes.searchInput}
+              label='Search MRN'
+              type='number'
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <Search />
+                  </InputAdornment>
+                )
+              }}
+              onChange={handleSearch}
+            />
+            {/* <Button
+              label='Add New Patient'
+              variant='outlined'
+              startIcon={<Add />}
+              className={classes.newButton}
+              onClick={() => setOpenPopup(true)}
+            /> */}
+          </Toolbar>
+
+          
             <TableContainer size="small">
+              <h4>Visits component</h4>
               <TableHeader />
 
               <TableBody>
-                {recordsAfterSorting().map((item) => (
+                {recordsAfterSorting(visits).map((item) => (
                   <TableRow
                     className={classes.link}
                     key={item.log_num}
                     component={Link}
-                    to={`/visits/${item.patient_mrn}/${item.log_num}`}>
+                    to={`/visits/${item.log_num}`}>
 
                     <TableCell>{formatDate(item.visit_date)}</TableCell>
                     <TableCell>{item.patient_mrn}</TableCell>
@@ -125,8 +152,8 @@ export default function Visits() {
               </TableBody>
             </TableContainer>
 
-            <TablePagination />
-          </React.Fragment>
+            <TablePagination count={visits.length}/>
+        
         </Paper>
       </div>
     )
