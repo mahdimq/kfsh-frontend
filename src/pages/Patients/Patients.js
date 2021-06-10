@@ -8,20 +8,19 @@ import {
   TableBody,
   TableCell,
   TableRow,
-  Toolbar
+  Toolbar,
+  Grid
 } from '@material-ui/core';
 import useTable from '../../hooks/useTable';
 import Input from '../../hooks/controls/Input';
 import PatientForm from './PatientForm';
 import { useFetchHook } from '../../hooks/useFetch';
 import { formatDate, age } from '../../helpers/dateFormatter';
-import { useSelector } from 'react-redux';
-import { getAllPatients } from '../../actions/actions';
-import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link, useHistory } from 'react-router-dom';
 import Popup from '../../components/Popup';
 import Button from '../../hooks/controls/Button';
-import { useDispatch } from 'react-redux';
-import { addPatient, addAlert } from '../../actions/actions';
+import { addPatient, addAlert, getAllPatients } from '../../actions/actions';
 import Spinner from '../../components/Spinner';
 
 const useStyles = makeStyles((theme) => ({
@@ -30,22 +29,16 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(5),
     textTransform: 'capitalize'
   },
-  searchInput: {
-    width: '60%'
-  },
   link: {
     textDecoration: 'none',
     color: 'inherit',
+    cursor: 'pointer',
     '&:hover': {
       // backgroundColor: '#fffbf2 !important',
       // backgroundColor: theme.palette.primary.light,
       color: theme.palette.primary.main
     }
   },
-  newButton: {
-    position: 'absolute',
-    right: '10px'
-  }
 }));
 
 const headCells = [
@@ -62,13 +55,15 @@ function Patients() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [ loading ] = useFetchHook(getAllPatients());
-  const { patients } = useSelector((state) => state.patient);
+  const { patients } = useSelector((state) => state.patients);
   const [ openPopup, setOpenPopup ] = useState(false);
   const [ filterFunc, setFilterFunc ] = useState({
     func: (items) => {
       return items;
     }
   });
+
+  const history = useHistory();
 
   const { TableContainer, TableHeader, TablePagination, recordsAfterSorting } = useTable(
     headCells,
@@ -85,98 +80,106 @@ function Patients() {
     });
   };
 
-  const addOrEdit = (patient, handleReset) => {
-    async function get() {
-      try {
-        await dispatch(addPatient(patient));
-        // history.goBack();
-      } catch (err) {
-        dispatch(addAlert(err, 'error'));
-      }
-    }
-    get();
+  const handleAddPatient = async (patient, handleReset) => {
+    // async function get() {
+    //   try {
+    //     await dispatch(addPatient(patient));
+    //     // history.goBack();
+    //   } catch (err) {
+    //     dispatch(addAlert(err, 'error'));
+    //   }
+    // }
+    // get();
+    // handleReset();
+    // setOpenPopup(false);
+    await dispatch(addPatient(patient));
     handleReset();
     setOpenPopup(false);
   };
+
+  const handleClose = () => setOpenPopup(false);
 
   {
     if (loading) return <Spinner />;
   }
 
   return (
-    !loading && (
-      <div>
-        <PageHeader
-          title='View Patients'
-          subtitle='Neurophysiology Department'
-          icon={<Apartment fontSize='large' />}
-        />
-        <Paper className={classes.pageContent}>
-          <Toolbar>
-            <Input
-              className={classes.searchInput}
-              label='Search MRN'
-              type='number'
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position='start'>
-                    <Search />
-                  </InputAdornment>
-                )
-              }}
-              onChange={handleSearch}
-            />
-            <Button
-              label='Add New Patient'
-              variant='outlined'
-              startIcon={<Add />}
-              className={classes.newButton}
-              onClick={() => setOpenPopup(true)}
-            />
-          </Toolbar>
+    <div>
+      <PageHeader
+        title='View Patients'
+        subtitle='Neurophysiology Department'
+        icon={<Apartment fontSize='large' />}
+      />
+      <Paper className={classes.pageContent}>
+        <Toolbar>
+          <Grid container spacing={1} alignItems="center">
+            <Grid item sm={8} xs={12}>
+              <Input
+                fullWidth
+                label='Search MRN'
+                type='number'
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position='start'>
+                      <Search />
+                    </InputAdornment>
+                  )
+                }}
+                onChange={handleSearch}
+              />
+            </Grid>
+            <Grid item xs />
+            <Grid item>
+              <Button
+                label='Add New Patient'
+                variant='outlined'
+                startIcon={<Add />}
+                className={classes.newButton}
+                // onClick={() => setOpenPopup(true)}
+                component={Link}
+                to={'/addpatient'}
+              />
+            </Grid>
+          </Grid>
+        </Toolbar>
 
-          <TableContainer size='small'>
-            <h4>Patients component</h4>
+        <h4>Patients component</h4>
+        <TableContainer size='small'>
+          <TableHeader />
 
-            <TableHeader />
+          <TableBody>
+            {patients &&
+              recordsAfterSorting(patients).map((item) => (
+                <TableRow
+                  className={classes.link}
+                  key={item.mrn}
+                  // component={Link}
+                  // to={`/patients/${item.mrn}`}
+                  onClick={() => history.push(`/patients/${item.mrn}`)}
+                  hover>
+                  <TableCell>{item.mrn}</TableCell>
+                  <TableCell>
+                    {item.firstname} {item.middlename} {item.lastname}
+                  </TableCell>
+                  <TableCell>{item.gender}</TableCell>
+                  <TableCell>{formatDate(item.dob)}</TableCell>
+                  <TableCell>
+                    {age(item.dob)} {age(item.dob) > 1 ? 'yrs' : 'yr'}
+                  </TableCell>
+                  <TableCell>{item.age_group}</TableCell>
+                  <TableCell>{item.nationality}</TableCell>
+                </TableRow>
+              ))}
+          </TableBody>
+        </TableContainer>
 
-            <TableBody>
-              {patients &&
-              Object.keys(patients).length === 0 &&
-                patients.constructor === Object ? (
-                <Spinner />
-              ) : (
-                recordsAfterSorting(patients).map((item) => (
-                  // {/* {recordsAfterSorting(patients).map((item) => ( */}
-                  <TableRow
-                    className={classes.link}
-                    key={item.mrn}
-                    component={Link}
-                    to={`/patients/${item.mrn}`}>
-                    <TableCell>{item.mrn}</TableCell>
-                    <TableCell>
-                      {item.firstname} {item.middlename} {item.lastname}
-                    </TableCell>
-                    <TableCell>{item.gender}</TableCell>
-                    <TableCell>{formatDate(item.dob)}</TableCell>
-                    <TableCell>
-                      {age(item.dob)} {age(item.dob) > 1 ? 'yrs' : 'yr'}
-                    </TableCell>
-                    <TableCell>{item.age_group}</TableCell>
-                    <TableCell>{item.nationality}</TableCell>
-                  </TableRow>
-                ))
-              )}
-            </TableBody>
-          </TableContainer>
+        <TablePagination count={patients.length} />
+      </Paper>
 
-          <TablePagination count={patients.length} />
-        </Paper>
-        <Popup openPopup={openPopup} setOpenPopup={setOpenPopup} title='Add New Patient'>
-          <PatientForm addOrEdit={addOrEdit} />
-        </Popup>
-      </div>
-    )
+      {/* <Popup openPopup={openPopup} handleClose={handleClose} title='Add New Patient'>
+          <PatientForm addOrEdit={handleAddPatient} />
+        </Popup>  */}
+    </div>
   );
 }
 

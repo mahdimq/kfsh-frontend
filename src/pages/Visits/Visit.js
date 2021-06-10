@@ -24,7 +24,8 @@ import {
   Event,
   LocationOn,
   AssignmentInd,
-  MenuBook
+  MenuBook,
+  ArrowBackIosOutlined
 } from '@material-ui/icons';
 
 import useTable from '../../hooks/useTable';
@@ -34,7 +35,7 @@ import { formatDate } from '../../helpers/dateFormatter';
 import { useFetchHook } from '../../hooks/useFetch';
 import { fetchVisits, addSingleVisit, addAlert } from '../../actions/actions';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router';
+import { useHistory, useParams } from 'react-router';
 import { Link } from 'react-router-dom';
 import Button from '../../hooks/controls/Button';
 import Popup from '../../components/Popup';
@@ -46,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
   pageContent: {
     margin: theme.spacing(1),
     padding: theme.spacing(2),
-    textTransform: 'capitalize',
+    textTransform: 'capitalize'
   },
   notFound: {
     margin: theme.spacing(3),
@@ -58,7 +59,8 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(0, 'auto'),
     width: '100%',
     maxWidth: 600,
-    fontSize: '40px'
+    fontSize: '40px',
+    textTransform: 'capitalize'
   },
   header: {
     // backgroundColor: '#faf7f0',
@@ -79,8 +81,7 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2)
   },
   newButton: {
-    position: 'absolute',
-    right: '10px'
+    marginLeft: theme.spacing(2)
   },
   divider: {
     backgroundColor: '#faf7f0',
@@ -96,11 +97,10 @@ const headCells = [
 
 export default function Visit() {
   const { log } = useParams();
+  const history = useHistory()
   const classes = useStyles();
   const [ loading ] = useFetchHook(fetchVisits(log));
-  // const [ load ] = useFetchHook(fetchAllVisits());
-  const { visit } = useSelector((state) => state.patient);
-  // const { visits } = useSelector((state) => state.patient);
+  const {visits} = useSelector((state) => state.patients);
   const [ openPopup, setOpenPopup ] = useState(false);
   const dispatch = useDispatch();
 
@@ -124,7 +124,7 @@ export default function Visit() {
   //     }
   //   });
   // };
-
+  
   const addOrEdit = (data, handleReset) => {
     async function get() {
       try {
@@ -138,16 +138,17 @@ export default function Visit() {
     handleReset();
     setOpenPopup(false);
   };
+  
+  const handleClose = () => setOpenPopup(false);
 
   {
     if (loading) return <Spinner />;
   }
 
-  if (!visit.visitDetails[0]) {
+  if (!visits.visitDetails[0]) {
     return (
       <div>
         <Grid container className={classes.header} alignItems='center'>
-          
           <Grid item sm={6}>
             <List className={classes.nameBlock} dense>
               <Grid container align='center'>
@@ -159,7 +160,7 @@ export default function Visit() {
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={`${visit.p_firstname} ${visit.p_lastname}`}
+                      primary={`${visits.p_firstname} ${visits.p_lastname}`}
                       secondary='Physician'
                     />
                   </ListItem>
@@ -168,12 +169,12 @@ export default function Visit() {
                 <Grid item sm={6}>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar variant="rounded">
+                      <Avatar variant='rounded'>
                         <Event />
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={formatDate(visit.visit_date)}
+                      primary={formatDate(visits.visit_date)}
                       secondary='Visit Date'
                     />
                   </ListItem>
@@ -186,22 +187,22 @@ export default function Visit() {
                 <Grid item sm={6}>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar variant="rounded">
+                      <Avatar variant='rounded'>
                         <LocationOn />
                       </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary={visit.location_name} secondary='Location' />
+                    <ListItemText primary={visits.location_name} secondary='Location' />
                   </ListItem>
                 </Grid>
 
                 <Grid item sm={6}>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar variant="rounded">
+                      <Avatar variant='rounded'>
                         <AssignmentInd />
                       </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary={visit.procedure_name} secondary='Procedure' />
+                    <ListItemText primary={visits.procedure_name} secondary='Procedure' />
                   </ListItem>
                 </Grid>
               </Grid>
@@ -212,13 +213,13 @@ export default function Visit() {
                 <Grid item sm={12}>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar variant="rounded">
+                      <Avatar variant='rounded'>
                         <MenuBook />
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={`${visit.log_num} ${visit.ped_log_num
-                        ? '/ ' + visit.ped_log_num
+                      primary={`${visits.log_num} ${visits.ped_log_num
+                        ? '/ ' + visits.ped_log_num
                         : ''}`}
                       secondary='Log Number'
                     />
@@ -227,17 +228,32 @@ export default function Visit() {
               </Grid>
             </List>
           </Grid>
-          
+
           <Grid item sm={6}>
-            <NameBlock patient={visit} />
+            <NameBlock patient={visits} />
           </Grid>
         </Grid>
 
         <Paper className={classes.notFound}>
           <Toolbar>
+            <Grid item>
+
             <Typography variant='h4' component='div'>
               Visit Details Not Found
             </Typography>
+            </Grid>
+            <Grid item xs />
+            <Grid item>
+
+            <Button
+              label="Go Back"
+              variant="outlined"
+              startIcon={<ArrowBackIosOutlined/>}
+              className={classes.newButton}
+              onClick={() => history.goBack()}
+              color="secondary"
+            />
+
             <Button
               label='Add Tests'
               variant='outlined'
@@ -245,11 +261,12 @@ export default function Visit() {
               className={classes.newButton}
               onClick={() => setOpenPopup(true)}
             />
+              </Grid>
           </Toolbar>
         </Paper>
 
-        <Popup openPopup={openPopup} setOpenPopup={setOpenPopup} title='Add Tests'>
-          <TestForm addOrEdit={addOrEdit} />
+        <Popup openPopup={openPopup} handleClose={handleClose} title='Add Tests'>
+          <TestForm addOrEdit={addOrEdit} setOpenPopup={setOpenPopup} log={log}/>
         </Popup>
       </div>
     );
@@ -259,19 +276,18 @@ export default function Visit() {
     !loading && (
       <div>
         <Grid container className={classes.header} alignItems='center'>
-          
           <Grid item sm={6}>
             <List className={classes.nameBlock} dense>
               <Grid container align='center'>
                 <Grid item sm={6}>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar variant="rounded">
+                      <Avatar variant='rounded'>
                         <Person />
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={`${visit.p_firstname} ${visit.p_lastname}`}
+                      primary={`${visits.p_firstname} ${visits.p_lastname}`}
                       secondary='Physician'
                     />
                   </ListItem>
@@ -280,12 +296,12 @@ export default function Visit() {
                 <Grid item sm={6}>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar variant="rounded">
+                      <Avatar variant='rounded'>
                         <Event />
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={formatDate(visit.visit_date)}
+                      primary={formatDate(visits.visit_date)}
                       secondary='Visit Date'
                     />
                   </ListItem>
@@ -298,22 +314,22 @@ export default function Visit() {
                 <Grid item sm={6}>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar variant="rounded">
+                      <Avatar variant='rounded'>
                         <LocationOn />
                       </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary={visit.location_name} secondary='Location' />
+                    <ListItemText primary={visits.location_name} secondary='Location' />
                   </ListItem>
                 </Grid>
 
                 <Grid item sm={6}>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar variant="rounded">
+                      <Avatar variant='rounded'>
                         <AssignmentInd />
                       </Avatar>
                     </ListItemAvatar>
-                    <ListItemText primary={visit.procedure_name} secondary='Procedure' />
+                    <ListItemText primary={visits.procedure_name} secondary='Procedure' />
                   </ListItem>
                 </Grid>
               </Grid>
@@ -324,13 +340,13 @@ export default function Visit() {
                 <Grid item sm={12}>
                   <ListItem>
                     <ListItemAvatar>
-                      <Avatar variant="rounded">
+                      <Avatar variant='rounded'>
                         <MenuBook />
                       </Avatar>
                     </ListItemAvatar>
                     <ListItemText
-                      primary={`${visit.log_num} ${visit.ped_log_num
-                        ? '/ ' + visit.ped_log_num
+                      primary={`${visits.log_num} ${visits.ped_log_num
+                        ? '/ ' + visits.ped_log_num
                         : ''}`}
                       secondary='Log Number'
                     />
@@ -341,28 +357,44 @@ export default function Visit() {
           </Grid>
 
           <Grid item sm={6}>
-            <NameBlock patient={visit} />
+            <NameBlock patient={visits} />
           </Grid>
         </Grid>
 
         <Paper className={classes.pageContent}>
           <Toolbar>
-          <Typography variant="h5" component="div">Visit Details
-            <Button
-              label='Add Test'
-              variant='outlined'
-              startIcon={<Add />}
-              className={classes.newButton}
-              onClick={() => setOpenPopup(true)}
-              />
+            <Grid item>
+
+
+            <Typography variant='h5' component='div'>
+              Visit Details
               </Typography>
+            </Grid>
+            <Grid item xs />
+            <Grid item>
+
+              <Button
+              label="Go Back"
+              variant="outlined"
+              startIcon={<ArrowBackIosOutlined/>}
+              onClick={() => history.goBack()}
+              color="secondary"
+              />
+              <Button
+                label='Add Test'
+                variant='outlined'
+                startIcon={<Add />}
+                className={classes.newButton}
+                onClick={() => setOpenPopup(true)}
+                />
+                </Grid>
           </Toolbar>
 
-          <TableContainer>
             <h4> Visit Component</h4>
+          <TableContainer>
             <TableHeader />
             <TableBody>
-              {recordsAfterSorting(visit.visitDetails).map((item) => (
+              {recordsAfterSorting(visits.visitDetails).map((item) => (
                 <TableRow className={classes.link} key={item.cpt}>
                   <TableCell>{item.cpt}</TableCell>
                   <TableCell>{item.description}</TableCell>
@@ -371,11 +403,11 @@ export default function Visit() {
               ))}
             </TableBody>
           </TableContainer>
-          <TablePagination count={visit.visitDetails.length} />
+          <TablePagination count={visits.visitDetails.length} />
         </Paper>
 
-        <Popup openPopup={openPopup} setOpenPopup={setOpenPopup} title='Add Tests'>
-          <TestForm addOrEdit={addOrEdit} />
+        <Popup openPopup={openPopup} handleClose={handleClose} title='Add Tests'>
+          <TestForm addOrEdit={addOrEdit} setOpenPopup={setOpenPopup} log={log}/>
         </Popup>
       </div>
     )

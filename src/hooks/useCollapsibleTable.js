@@ -138,9 +138,9 @@ export default function useCollapsibleTable(row, headCells, detailHeadCells) {
     </TableHead>
   );
 
-  {
-    /* {rows.details.map(item => console.log("ITEM: ", item.cpt))} */
-  }
+  // {
+  //   /* {rows.details.map(item => console.log("ITEM: ", item.cpt))} */
+  // }
   // <TableRow className={classes.root} key={rows.log_num}>
   //   <TableCell>
   //     <IconButton aria-label='expand row' size='small' onClick={() => setOpen(!open)}>
@@ -162,9 +162,9 @@ export default function useCollapsibleTable(row, headCells, detailHeadCells) {
   //   <TableCell>{rows.location_name}</TableCell>
   //   <TableCell>{formatDate(rows.visit_date)}</TableCell>
   // </TableRow>;
-  {
-    /* ))} */
-  }
+  // {
+  //   /* ))} */
+  // }
 
   // <TableRow>
   //   <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -174,18 +174,18 @@ export default function useCollapsibleTable(row, headCells, detailHeadCells) {
   //           Details
   //         </Typography>
 
-  {
-    /* <TableHead>
-                  <TableRow>
-                    <TableCell>CPT</TableCell>
-                    <TableCell>Description</TableCell>
-                    <TableCell>Quantity</TableCell>
-                    <TableCell>Physician</TableCell>
-                    <TableCell>Location</TableCell>
-                    <TableCell>Visit Date</TableCell>
-                  </TableRow>
-                </TableHead> */
-  }
+  // {
+  //   /* <TableHead>
+  //                 <TableRow>
+  //                   <TableCell>CPT</TableCell>
+  //                   <TableCell>Description</TableCell>
+  //                   <TableCell>Quantity</TableCell>
+  //                   <TableCell>Physician</TableCell>
+  //                   <TableCell>Location</TableCell>
+  //                   <TableCell>Visit Date</TableCell>
+  //                 </TableRow>
+  //               </TableHead> */
+  // }
 
   // <TableBody>
   //   <TableRow key={detailsRow.cpt}>

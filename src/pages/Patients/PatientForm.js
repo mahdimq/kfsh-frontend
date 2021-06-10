@@ -1,15 +1,17 @@
 import React from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { addAlert, addPatient } from '../../actions/actions';
+import { addAlert, addPatient, getAllPatients } from '../../actions/actions';
 
-import { Grid } from '@material-ui/core/';
+import { Grid, Typography, Paper, Toolbar, makeStyles } from '@material-ui/core/';
 import { useForm, Form } from '../../hooks/useForm';
 import Input from '../../hooks/controls/Input';
 import Button from '../../hooks/controls/Button';
 import RadioButton from '../../hooks/controls/RadioButton';
 import DatePicker from '../../hooks/controls/DatePicker';
 import Select from '../../hooks/controls/Select';
+import ActionButton from '../../hooks/controls/ActionButton';
+import { Close } from '@material-ui/icons';
 
 const initialValues = {
   mrn: '',
@@ -22,7 +24,16 @@ const initialValues = {
   nationality: ''
 };
 
-export default function PatientForm({addOrEdit}) {
+const useStyles = makeStyles((theme) => ({
+  pageContent: {
+    margin: theme.spacing(5),
+    padding: theme.spacing(5),
+    textTransform: 'capitalize'
+  }
+}));
+
+export default function PatientForm({ addOrEdit }) {
+  const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
 
@@ -57,18 +68,18 @@ export default function PatientForm({addOrEdit}) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validation()) {
-      // try {
-      //   await dispatch(addPatient(formData));
-      //   // history.goBack();
-      // } catch (err) {
-      //   dispatch(addAlert(err, 'error'))
-      //     // err.forEach(element => dispatch(addAlert(element, 'error')));
-      //   }
-      // }
-      // handleReset();
+      try {
+        await dispatch(addPatient(formData));
+      } catch (err) {
+        dispatch(addAlert(err, 'error'));
+        // err.forEach(element => dispatch(addAlert(element, 'error')));
+      }
+      
+      handleReset();
       addOrEdit(formData, handleReset)
+      history.push('/patients');
+    }
   };
-}
 
   const genderItems = [
     { id: 'male', title: 'Male' },
@@ -85,126 +96,151 @@ export default function PatientForm({addOrEdit}) {
     { id: 'non-saudi', title: 'Non-Saudi' }
   ];
 
+  const handleClose = () => history.push('/patients');
+
   return (
-    <Form onSubmit={handleSubmit}>
-      <Grid container spacing={3}>
-        <Grid item md={6} sm={8} xs={12}>
-          <Input
-            name='mrn'
-            label='Patient MRN'
-            value={formData.mrn}
-            onChange={handleChange}
-            id='mrn'
-            required
-            type='number'
-            error={errors.mrn}
-          />
+    <Paper className={classes.pageContent}>
+      <Toolbar>
+        <Grid container>
+          <Grid item>
+            <Typography variant='h4' component='div'>
+              Add Patient
+            </Typography>
+          </Grid>
+          <Grid item xs />
+          <Grid item>
+            <ActionButton color='secondary' onClick={() => handleClose()}>
+              <Close />
+            </ActionButton>
+          </Grid>
+        </Grid>
+      </Toolbar>
+
+
+
+      <Form onSubmit={handleSubmit}>
+        <Grid container spacing={3}>
+          <Grid item md={6} sm={8} xs={12}>
+            <Input
+              name='mrn'
+              label='Patient MRN'
+              value={formData.mrn}
+              onChange={handleChange}
+              id='mrn'
+              required
+              type='number'
+              error={errors.mrn}
+            />
+          </Grid>
+
+          <Grid item md={4}>
+            <RadioButton
+              name='gender'
+              label='Gender'
+              value={formData.gender}
+              onChange={handleChange}
+              items={genderItems}
+              error={errors.gender}
+              default='male'
+              required
+            />
+          </Grid>
         </Grid>
 
-        <Grid item md={4}>
-          <RadioButton
-            name='gender'
-            label='Gender'
-            value={formData.gender}
-            onChange={handleChange}
-            items={genderItems}
-            error={errors.gender}
-            default='male'
-          />
-        </Grid>
-      </Grid>
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={4}>
+            <Input
+              name='firstname'
+              label='First Name'
+              value={formData.firstname}
+              onChange={handleChange}
+              id='firstname'
+              required
+              error={errors.firstname}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Input
+              name='middlename'
+              label='Middle Name'
+              value={formData.middlename}
+              onChange={handleChange}
+              id='middlename'
+              required
+              error={errors.middlename}
+            />
+          </Grid>
+          <Grid item xs={12} sm={6} md={4}>
+            <Input
+              name='lastname'
+              label='Last Name'
+              value={formData.lastname}
+              onChange={handleChange}
+              id='lastname'
+              required
+              error={errors.lastname}
+            />
+          </Grid>
 
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={4}>
-          <Input
-            name='firstname'
-            label='First Name'
-            value={formData.firstname}
-            onChange={handleChange}
-            id='firstname'
-            required
-            error={errors.firstname}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Input
-            name='middlename'
-            label='Middle Name'
-            value={formData.middlename}
-            onChange={handleChange}
-            id='middlename'
-            required
-            error={errors.middlename}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Input
-            name='lastname'
-            label='Last Name'
-            value={formData.lastname}
-            onChange={handleChange}
-            id='lastname'
-            required
-            error={errors.lastname}
-          />
+          <Grid item xs={12} sm={6} md={4}>
+            <DatePicker
+              name='dob'
+              label='Date of Birth'
+              value={formData.dob}
+              onChange={handleChange}
+              error={errors.dob}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={4}>
+            <Select
+              name='nationality'
+              label='Nationality'
+              options={nationalityItems}
+              value={formData.nationality}
+              onChange={handleChange}
+              error={errors.nationality}
+            />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={4}>
+            <RadioButton
+              name='age_group'
+              label='Age Group'
+              value={formData.age_group}
+              onChange={handleChange}
+              items={ageGroupItems}
+              error={errors.age_group}
+              default='adult'
+            />
+          </Grid>
         </Grid>
 
-        <Grid item xs={12} sm={6} md={4}>
-          <DatePicker
-            name='dob'
-            label='Date of Birth'
-            value={formData.dob}
-            onChange={handleChange}
-            error={errors.dob}
-          />
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={4} md={2}>
+            <Button
+              fullWidth
+              size='large'
+              label='Submit'
+              variant='outlined'
+              type='submit'
+              color='primary'
+            />
+          </Grid>
+          <Grid item xs={12} sm={4} md={2}>
+            <Button
+              fullWidth
+              size='large'
+              label='Reset'
+              variant='outlined'
+              onClick={handleReset}
+              color='secondary'
+            />
+          </Grid>
         </Grid>
+      </Form>
 
-        <Grid item xs={12} sm={6} md={4}>
-          <Select
-            name='nationality'
-            label='Nationality'
-            options={nationalityItems}
-            value={formData.nationality}
-            onChange={handleChange}
-            error={errors.nationality}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={6} md={4}>
-          <RadioButton
-            name='age_group'
-            label='Age Group'
-            value={formData.age_group}
-            onChange={handleChange}
-            items={ageGroupItems}
-            error={errors.age_group}
-            default='adult'
-          />
-        </Grid>
-      </Grid>
-
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={4} md={2}>
-          <Button
-            fullWidth
-            size='large'
-            label='Submit'
-            variant='outlined'
-            type='submit'
-            color='primary'
-          />
-        </Grid>
-        <Grid item xs={12} sm={4} md={2}>
-          <Button
-            fullWidth
-            size='large'
-            label='Reset'
-            variant='outlined'
-            onClick={handleReset}
-            color='secondary'
-          />
-        </Grid>
-      </Grid>
-    </Form>
+      
+    </Paper>
   );
 }

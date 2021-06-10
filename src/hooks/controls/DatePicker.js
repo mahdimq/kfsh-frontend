@@ -17,8 +17,8 @@ export default function DatePicker({ name, label, value, onChange }) {
         // format='dd-MMM-yyyy'
         // type='date'
         disableFuture
-        openTo="year"
-        format="dd-MMM-yyyy"
+        format="dd-MM-yyyy"
+        orientation="landscape"
         label={label}
         views={["year", "month", "date"]}
         value={value}
@@ -26,6 +26,9 @@ export default function DatePicker({ name, label, value, onChange }) {
         variant='inline'
         inputVariant='outlined'
         name={name}
+        KeyboardButtonProps={{
+          'aria-label': 'change date',
+        }}
       />
     </MuiPickersUtilsProvider>
   );

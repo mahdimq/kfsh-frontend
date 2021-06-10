@@ -45,7 +45,7 @@ const initialValues = {
 export default function Login() {
   const classes = useStyles();
   const history = useHistory();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.users);
   const dispatch = useDispatch();
   const { formData, handleReset, handleChange, errors, setErrors, setFormData } = useForm(
     initialValues,
@@ -65,7 +65,8 @@ export default function Login() {
     e.preventDefault();
     try {
       await dispatch(loginUser(formData));
-      history.push('/');
+      // history.push('/');
+      history.goBack()
     } catch (err) {
       err.forEach((error) => {
         dispatch(addAlert(error, 'error'));

@@ -7,21 +7,44 @@ import Login from '../pages/Users/Login';
 import Registration from '../pages/Users/Registration';
 import Users from '../pages/Users/Users';
 import Admin from './Admin';
-// import PatientsList from './PatientsList';
-// import Patients from './Patients';
 import Patients from '../pages/Patients/Patients';
-import HospitalForm from '../pages/Hospital/HospitalForm';
-import Procedures from '../pages/Procedures/Procedures';
 import VisitForm from '../pages/Visits/VisitForm';
-import ProcedureForm from '../pages/Procedures/ProcedureForm';
 import Hospital from '../pages/Hospital/Hospital';
 import Visits from '../pages/Visits/Visits';
-import Visit from '../pages/Visits/Visit';
+import Visit from '../pages/Visits/Visit'
 import VisitDetails from '../pages/Visits/VisitDetails';
 import Patient from '../pages/Patients/Patient';
-import TestForm from '../pages/Visits/TestForm';
+import ReportForms from '../pages/Hospital/ReportForms';
+import PatientForm from '../pages/Patients/PatientForm';
 
 function Routes() {
+  
+  // const {users} = useSelector((state) => state.users);
+  // const state = useSelector(state => state.hospital)
+  // const dispatch = useDispatch();
+
+
+  // const fetchData = async() => {
+  //   try {
+  //     await dispatch(loadHospitalData())
+  //     await dispatch(fetchUsers())
+  //   } catch (error){
+  //     await dispatch(addAlert(error, 'error'))
+  //   }
+  // }
+  // useEffect(() => {
+  //   // const fetchData = async () => {
+  //   //   try {
+  //   //     await dispatch(loadHospitalData())
+  //   //     await dispatch(fetchUsers())
+  //   //   } catch (error){
+  //   //     await dispatch(addAlert(error, 'error'))
+  //   //   }
+  //   // }
+  //   fetchData()
+    
+  // }, [])
+
   return (
     <Switch>
       <Route exact path='/'>
@@ -53,7 +76,7 @@ function Routes() {
       </Route>
 
       <Route exact path='/patients/:mrn'>
-        <Patient />
+        <Patient/>
       </Route>
 
       <Route exact path='/visits'>
@@ -68,10 +91,21 @@ function Routes() {
         <VisitDetails />
       </Route>
 
-      {/* 
-      <Route exact path='/procedures'>
-        <Procedures/>
-      </Route> */}
+      <Route exact path="/reports">
+        <ReportForms />
+      </Route>
+
+      <Route exact path="/addpatient">
+        <PatientForm />
+      </Route>
+
+      <Route exact path="/:mrn/addvisit">
+        <VisitForm/>
+      </Route>
+
+      <Route exact path="/hospitaldata">
+        <Hospital/>
+      </Route>
 
       <Redirect to='/' />
     </Switch>

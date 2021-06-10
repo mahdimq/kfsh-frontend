@@ -12,6 +12,7 @@ import {
 const useStyles = makeStyles((theme) => ({
   table: {
     marginTop: theme.spacing(1),
+    textTransform: "capitalize",
     '& thead th': {
       fontWeight: '600',
       color: theme.palette.primary.main,

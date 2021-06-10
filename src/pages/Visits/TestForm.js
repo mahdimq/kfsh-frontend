@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { addAlert, addPatient, addSingleVisit, fetchVisits } from '../../actions/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { addAlert, addVisitDetail } from '../../actions/actions';
 
 import {
   Card,
@@ -16,11 +16,9 @@ import {
 import { useForm, Form } from '../../hooks/useForm';
 import Input from '../../hooks/controls/Input';
 import Button from '../../hooks/controls/Button';
-import RadioButton from '../../hooks/controls/RadioButton';
-import DatePicker from '../../hooks/controls/DatePicker';
 import Select from '../../hooks/controls/Select';
-import { useParams } from 'react-router';
 import { Close } from '@material-ui/icons';
+import kfshAPI from '../../kfshAPI';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,48 +32,47 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     display: 'flex',
-    justifyContent: "center",
+    justifyContent: 'center',
     alignItems: 'flex-end'
   }
 }));
 
-const initialValues = {
-  cpt: '',
-  quantity: ''
-};
-
-export default function TestForm() {
-  const { mrn } = useParams();
+export default function TestForm({ setOpenPopup, log }) {
   const classes = useStyles();
   const history = useHistory();
   const dispatch = useDispatch();
   const [ testData, setTestData ] = useState([]);
 
-  // const validation = (fieldValues = formData) => {
-  //   const temp = { ...errors };
-  //   if ('log_num' in fieldValues)
-  //     temp.log_num = formData.log_num ? '' : 'NPL Number is required';
-  //   if ('procedure_id' in fieldValues)
-  //     temp.procedure_id = formData.procedure_id ? '' : 'Procedure is required';
-  //   if ('location_id' in fieldValues)
-  //     temp.location_id = formData.location_id ? '' : 'Location is required';
-  //   if ('visit_date' in fieldValues)
-  //     temp.visit_date = formData.visit_date ? '' : 'Please enter Date of Procedure';
+  const { testCodes } = useSelector((state) => state.hospital);
 
-  //   setErrors({ ...temp });
-  //   if (fieldValues === formData) return Object.values(temp).every((i) => i === '');
-  // };
+  const validation = (fieldValues = formData) => {
+    const temp = { ...errors };
+    if ('quantity' in fieldValues)
+      temp.quantity = formData.quantity ? '' : 'Quantity required';
+    if ('test_id' in fieldValues)
+      temp.test_id = formData.test_id ? '' : 'CPT Code required';
+
+    setErrors({ ...temp });
+    if (fieldValues === formData) return Object.values(temp).every((i) => i === '');
+  };
+
+  const initialValues = {
+    test_id: '',
+    quantity: 1,
+    visit_id: log
+  };
 
   const { formData, handleReset, handleChange, errors, setErrors, setFormData } = useForm(
     initialValues,
-    true
-    // validation
+    true,
+    validation
   );
 
   const handleAdd = () => {
-    // if (validation()) {
-    setTestData((prev) => [ ...prev, formData ]);
-    // }
+    if (validation()) {
+      setTestData((prev) => [ ...prev, formData ]);
+    }
+
     handleReset();
   };
 
@@ -84,29 +81,21 @@ export default function TestForm() {
     setTestData(newItems);
   };
 
-  console.log("VISIT DETAILS: ", testData)
-  
-  const handleSubmit = async (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    // if (validation()) {
     try {
-      await dispatch(addSingleVisit(mrn, {testData})); 
-      // history.goBack();
+      testData.forEach(async (item) => {
+        await dispatch(addVisitDetail(log, item));
+      });
+      dispatch(addAlert('Tests added successfully!', 'success'));
     } catch (err) {
-      await dispatch(addAlert(err, 'error'));
-      };
-    // }
+      dispatch(addAlert(err, 'error'));
+    }
     handleReset();
-
+    history.push(`/visits/${log}`);
+    console.log("LOG ", log)
+    setOpenPopup(false);
   };
-
-  const testDescription = [
-    { id: 91986, title: 'Awake & Asleep' },
-    { id: 98213, title: 'Long Term Monitoring' },
-    { id: 23478, title: 'Upper & Lower SSEP' },
-    { id: 23876, title: '3-4 Nerves' },
-    { id: 13232, title: '2 Muscle EMG' }
-  ];
 
   return (
     <Paper className={classes.pageContent}>
@@ -114,12 +103,12 @@ export default function TestForm() {
         <Grid container spacing={3}>
           <Grid item md={6} sm={6} xs={12}>
             <Select
-              name='cpt'
+              name='test_id'
               label='Test Description'
-              options={testDescription}
-              value={parseInt(formData.cpt)}
+              options={testCodes}
+              value={formData.test_id}
               onChange={handleChange}
-              error={errors.cpt}
+              error={errors.test_id}
               required
             />
           </Grid>
@@ -128,11 +117,12 @@ export default function TestForm() {
             <Input
               name='quantity'
               label='Quantity'
-              value={formData.quantity}
+              value={parseInt(formData.quantity)}
               onChange={handleChange}
               type='number'
               id='quantity'
-              default={1}
+              error={errors.quantity}
+              InputProps={{ inputProps: { min: 1, max:100 } }}
               required
             />
           </Grid>
@@ -142,9 +132,9 @@ export default function TestForm() {
               fullWidth
               size='small'
               label='Add'
-              variant='outlined'
+              variant='contained'
               onClick={handleAdd}
-              color='default'
+              color='primary'
             />
           </Grid>
           {/* 
@@ -160,33 +150,31 @@ export default function TestForm() {
           </Grid> */}
         </Grid>
 
-
-      <List className={classes.root}>
-        {testData.map((item, i) => (
-          <React.Fragment key={i}>
-            {console.log("INDEX i: ", i)}
-            <ListItem button className={classes.listItem}>
-              <ListItemText
-                primary={`CPT Code: ${item.cpt} - ${item.description}: Quantity: ${item.quantity}`}
+        <List className={classes.root}>
+          {testData.map((item, i) => (
+            <React.Fragment key={i}>
+              <ListItem button className={classes.listItem}>
+                <ListItemText
+                  primary={`CPT Code: ${item.test_id} - Quantity: ${item.quantity}`}
                 />
-              <Close onClick={() => handleRemove(i)} color='secondary' />
-            </ListItem>
-            <Divider />
-          </React.Fragment>
-        ))}
-      </List>
+                <Close onClick={() => handleRemove(i)} color='secondary' />
+              </ListItem>
+              <Divider />
+            </React.Fragment>
+          ))}
+        </List>
 
         <Grid item xs={12} sm={4} md={2}>
-            <Button
-              fullWidth
-              size='large'
-              label='Submit'
-              variant='outlined'
-              onClick={handleSubmit}
-              color='primary'
-            />
-          </Grid>
-        </Form>
+          <Button
+            fullWidth
+            size='large'
+            label='Submit'
+            variant='outlined'
+            onClick={handleSubmit}
+            color='primary'
+          />
+        </Grid>
+      </Form>
     </Paper>
   );
 }

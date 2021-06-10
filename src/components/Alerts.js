@@ -15,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
 	}
 }));
 
-function Alerts() {
+function Alerts({alert}) {
 	const classes = useStyles();
 	const dispatch = useDispatch();
 	const alerts = useSelector((state) => state.alerts);
@@ -33,7 +33,7 @@ function Alerts() {
 	} else {
 		return alerts.map((a, i) => (
 			<div key={i} className={classes.root}>
-				<Alert severity={a.type}>{a.message}</Alert>
+				<Alert severity={a.type}>{a.message || alert}</Alert>
 			</div>
 		));
 	}

@@ -21,15 +21,8 @@ import {
 import kfshLogo from '../images/kfshLogo.png';
 
 // icons
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import HelpIcon from '@material-ui/icons/Help';
-import SettingsIcon from '@material-ui/icons/Settings';
-import PowerSettingsNewIcon from '@material-ui/icons/PowerSettingsNew';
-import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
-import GroupIcon from '@material-ui/icons/Group';
+import {ExitToApp, Help, Settings, Group, Apartment, MenuBook, PowerSettingsNew} from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
-import ApartmentIcon from '@material-ui/icons/Apartment';
-import MenuBookIcon from '@material-ui/icons/MenuBook';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -77,7 +70,7 @@ export default function Navbar() {
   const [ anchorEl, setAnchorEl ] = useState(null);
   const [ mobileMoreAnchorEl, setMobileMoreAnchorEl ] = useState(null);
 
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.users);
   const dispatch = useDispatch();
 
   const isMenuOpen = Boolean(anchorEl);
@@ -171,10 +164,10 @@ export default function Navbar() {
         {/* Users & Admin icons */}
         {user.token &&
         user.is_admin && (
-          <React.Fragment>
+          <div>
             <MenuItem>
               <IconButton className={classes.icon} aria-label='Users'>
-                <GroupIcon fontSize="small"/>
+                <Group fontSize="small"/>
               </IconButton>
               <Button size='small'>
                 <Link style={{ textDecoration: 'none', color: 'black' }} to='/users'>
@@ -185,7 +178,7 @@ export default function Navbar() {
 
             <MenuItem>
               <IconButton className={classes.icon} aria-label='Admin Menu'>
-                <SettingsIcon fontSize="small"/>
+                <Settings fontSize="small"/>
               </IconButton>
               <Button size='small'>
                 <Link style={{ textDecoration: 'none', color: 'black' }} to='/admin'>
@@ -193,15 +186,15 @@ export default function Navbar() {
                 </Link>
               </Button>
             </MenuItem>
-          </React.Fragment>
+          </div>
         )}
 
         {/* Patients, Login/Logout Icons */}
         {user.token ? (
-          <React.Fragment>
+          <div>
             <MenuItem>
               <IconButton className={classes.icon} aria-label='Patients'>
-                <ApartmentIcon fontSize='small' />
+                <Apartment fontSize='small' />
               </IconButton>
               <Button size="small">
                 <Link style={{ textDecoration: 'none', color: 'black' }} to='/patients'>
@@ -212,7 +205,7 @@ export default function Navbar() {
 
             <MenuItem>
               <IconButton className={classes.icon} aria-label='logbook'>
-                <MenuBookIcon fontSize='small' />
+                <MenuBook fontSize='small' />
               </IconButton>
               <Button size="small">
                 <Link style={{ textDecoration: 'none', color: 'black' }} to='/visits'>
@@ -223,17 +216,17 @@ export default function Navbar() {
 
             <MenuItem>
               <IconButton className={classes.icon} aria-label='Logout'>
-                <ExitToAppIcon fontSize='small'/>
+                <ExitToApp fontSize='small'/>
               </IconButton>
               <Button size="small" onClick={handleLogout}>
                 Logout
               </Button>
             </MenuItem>
-          </React.Fragment>
+          </div>
         ) : (
           <MenuItem>
             <IconButton className={classes.icon} aria-label='Login'>
-              <PowerSettingsNewIcon fontSize="small" />
+              <PowerSettingsNew fontSize="small" />
             </IconButton>
             <Button size='small'>
               <Link style={{ textDecoration: 'none', color: 'black' }} to='/login'>
@@ -263,52 +256,52 @@ export default function Navbar() {
 
             <Grid item className={classes.desktop}>
               {user.token && (
-                <React.Fragment>
+                <div>
                   <Link to='/patients'>
                     <IconButton aria-label='patient'>
-                      <ApartmentIcon fontSize='small' />
+                      <Apartment fontSize='small' />
                     </IconButton>
                   </Link>
 
                   <Link to='/visits'>
                     <IconButton aria-label='logbook'>
-                      <MenuBookIcon fontSize='small' />
+                      <MenuBook fontSize='small' />
                     </IconButton>
                   </Link>
-                </React.Fragment>
+                </div>
               )}
 
               {user.token &&
               user.is_admin && (
-                <React.Fragment>
+                <div>
                   <Link to='/users'>
                     <IconButton aria-label='Users'>
-                      <GroupIcon fontSize='small' />
+                      <Group fontSize='small' />
                     </IconButton>
                   </Link>
 
                   <Link to='/admin' style={{ textDecoration: 'none', color: 'black' }}>
                     <IconButton aria-label='Admin Menu'>
-                      <SettingsIcon fontSize='small' />
+                      <Settings fontSize='small' />
                     </IconButton>
                   </Link>
-                </React.Fragment>
+                </div>
               )}
 
               {/* Support button  */}
               <IconButton onClick={handleSupportMenuOpen} aria-label='Settings'>
-                <HelpIcon fontSize='small' />
+                <Help fontSize='small' />
               </IconButton>
 
               {/* Show user custom buttons */}
               {user.token ? (
                 <IconButton onClick={handleLogout} aria-label='Admin Menu'>
-                  <ExitToAppIcon fontSize='small' />
+                  <ExitToApp fontSize='small' />
                 </IconButton>
               ) : (
                 <Link to='/login'>
                   <IconButton>
-                    <PowerSettingsNewIcon fontSize='small' />
+                    <PowerSettingsNew fontSize='small' />
                   </IconButton>
                 </Link>
               )}

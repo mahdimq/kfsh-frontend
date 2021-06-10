@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 
 const BASE_URL = process.env.BASE_URL || 'http://localhost:3001';
@@ -67,25 +66,25 @@ class kfshAPI {
 
   static async addPatient(data) {
     const res = await this.request(`patients/`, data, 'post');
-    return res;
+    return res.patient;
   }
 
   static async getAllPatients() {
     const res = await this.request(`patients`);
-    return res.patients;
+    return res;
   }
 
   static async getPatient(mrn) {
     const res = await this.request(`patients/${mrn}`);
-    return res;
+    return res.patient;
   }
 
   // ########################################################
   // ##################### VISIT ENDPOINTS ###################
   // ########################################################
   // GET ALL VISITS FOR A SINGLE PATIENT
-  static async getVisits(mrn) {
-    const result = await this.request(`visits/${mrn}`);
+  static async getVisits(log) {
+    const result = await this.request(`visits/${log}`);
     return result;
   }
 
@@ -96,8 +95,8 @@ class kfshAPI {
   }
 
   // ADD VISIT FOR SINGLE PATIENT
-  static async addVisit(mrn, data) {
-    const result = await this.request(`visits/${mrn}`, data, 'post');
+  static async addVisit(log, data) {
+    const result = await this.request(`visits/${log}`, data, 'post');
     return result;
   }
 
@@ -128,7 +127,7 @@ class kfshAPI {
   // GET ALL PROCEDURES
   static async getProcedures() {
     const res = await this.request(`hospital/procedures`);
-    return res; 
+    return res;
   }
 
   // ADD PROCEDURE
@@ -139,14 +138,18 @@ class kfshAPI {
 
   // DELETE PROCEDURE
   static async deleteProcedure(id, token) {
-    const res = await this.request(`hospital/procedures/${id}`, {_token: token}, 'delete');
+    const res = await this.request(
+      `hospital/procedures/${id}`,
+      { _token: token },
+      'delete'
+    );
     return res.message;
   }
   // ========================================================
   // GET ALL TEST CODES
   static async getTestCodes() {
     const res = await this.request(`hospital/testcodes`);
-    return res; 
+    return res;
   }
 
   // ADD TEST CODE
@@ -157,7 +160,11 @@ class kfshAPI {
 
   // DELETE TEST CODE
   static async deleteTestCode(cpt, token) {
-    const res = await this.request(`hospital/testcodes/${cpt}`, {_token: token}, 'delete');
+    const res = await this.request(
+      `hospital/testcodes/${cpt}`,
+      { _token: token },
+      'delete'
+    );
     return res.message;
   }
 
@@ -165,7 +172,7 @@ class kfshAPI {
   // GET ALL LOCATIONS
   static async getLocations() {
     const res = await this.request(`hospital/locations`);
-    return res; 
+    return res;
   }
 
   // ADD LOCATION
@@ -176,7 +183,11 @@ class kfshAPI {
 
   // DELETE LOCATION
   static async deleteLocation(id, token) {
-    const res = await this.request(`hospital/locations/${id}`, {_token: token}, 'delete');
+    const res = await this.request(
+      `hospital/locations/${id}`,
+      { _token: token },
+      'delete'
+    );
     return res.message;
   }
 
@@ -184,7 +195,7 @@ class kfshAPI {
   // GET ALL DEPARTMENTS
   static async getDepartments() {
     const res = await this.request(`hospital/departments`);
-    return res; 
+    return res;
   }
 
   // ADD DEPARTMENT
@@ -195,7 +206,11 @@ class kfshAPI {
 
   // DELETE DEPARTMENT
   static async deleteDepartment(id, token) {
-    const res = await this.request(`hospital/departments/${id}`, {_token: token}, 'delete');
+    const res = await this.request(
+      `hospital/departments/${id}`,
+      { _token: token },
+      'delete'
+    );
     return res.message;
   }
 
@@ -213,10 +228,55 @@ class kfshAPI {
     const result = await this.request(`visitdetails/`);
     return result;
   }
-  // static async getVisitDetails(mrn) {
-  // 	const result = await this.request(`visitdetails/${mrn}`);
-  // 	return result;
-  // }
+
+  // ADD VISIT DETAILS FOR SINGLE PATIENT
+  static async addVisitDetail(log, data) {
+    const result = await this.request(`visitdetails/${log}`, data, 'post')
+    return result;
+  }
+
+  // ########################################################
+  // ################### QUERIES ENDPOINTS ##################
+  // ########################################################
+  // GET PROCEDURE REPORTS FOR NPL BY DATE AND AGE
+  static async getByDate(data) {
+    const result = await this.request(`queries/`, data, 'get');
+    return result;
+  }
+
+  // GET PROCEDURE REPORTS FOR NPL BY DATE
+  static async getNpl(data) {
+    const result = await this.request(`queries/npl`, data, 'get');
+    return result;
+  }
+
+  // GET PROCEDURE REPORTS BY USERS
+  static async getByUser(data) {
+    const result = await this.request(`queries/user`, data);
+    return result;
+  }
+
+  // GET PROCEDURE REPORTS BY PHYSICIAN
+  static async getByPhysician(data) {
+    const result = await this.request(`queries/physician`, data);
+    return result;
+  }
+
+  // GET PROCEDURE REPORTS BY PHYSICIAN DEPARTMENT
+  static async getByDepartment(data) {
+    const result = await this.request(`queries/department`,data);
+    return result;
+  }
+
+  // ########################################################
+  // ##################### TEST ENDPOINTS ###################
+  // ########################################################
+  // GET PROCEDURE REPORTS FOR NPL BY DATE AND AGE
+  static async getTestById(id) {
+    const result = await this.request(`/visitdetails/test/${id}`, 'get');
+    return result;
+  }
+
 }
 
 export default kfshAPI;

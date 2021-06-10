@@ -7,12 +7,12 @@ import hospitalReducer from './hospitalReducer';
 import visitDetailReducer from './visitDetailReducer';
 
 const rootReducer = combineReducers({
-	user: userReducer,
+	users: userReducer,
 	alerts: alertsReducer,
-	patient: patientReducer,
+	patients: patientReducer,
   procedure: procedureReducer,
   hospital: hospitalReducer,
-  visitDetail: visitDetailReducer
+  visitDetails: visitDetailReducer
 });
 
 export default rootReducer;

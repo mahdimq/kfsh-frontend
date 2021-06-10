@@ -16,23 +16,23 @@ function patientReducer(state = INITIAL_STATE, action) {
   switch (action.type) {
     case ADD_VISIT:
     case ADD_PATIENT:
-      return action.payload;
+      return {...action.payload};
 
-    case FETCH_PATIENT_INFO:
-    case UPDATE_PATIENT:
-      return { ...state, ...action.payload };
+    // case FETCH_PATIENT_INFO:
+    // case UPDATE_PATIENT:
+    //   return { ...state, ...action.payload };
 
-    case FETCH_PATIENTS:
+    // case FETCH_PATIENTS:
+    //   return { ...state, patients: action.payload };
+
+    case FETCH_PATIENT:
       return { ...state, patients: action.payload };
-    
-      case FETCH_PATIENT:
-      return { ...state, patient: action.payload };
 
-    case GET_VISITS:
-      return { ...state, visits: action.payload };
+    // case GET_VISITS:
+      // return { ...state, visits: action.payload };
 
     case GET_VISIT:
-      return {...state, visit: action.payload}
+      return { ...state, visits: action.payload };
 
     case DELETE_VISIT:
       return INITIAL_STATE;

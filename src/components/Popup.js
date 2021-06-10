@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Popup({ title, children, openPopup, setOpenPopup }) {
+export default function Popup({ title, children, openPopup, handleClose }) {
   const classes = useStyles();
   return (
     <Dialog maxWidth='md' classes={{ paper: classes.dialogWrapper }} open={openPopup}>
@@ -36,7 +36,7 @@ export default function Popup({ title, children, openPopup, setOpenPopup }) {
             {title}
           </Typography>
 
-          <ActionButton color='secondary' onClick={() => setOpenPopup(false)}>
+          <ActionButton color='secondary' onClick={() => handleClose()}>
             <Close />
           </ActionButton>
         </div>

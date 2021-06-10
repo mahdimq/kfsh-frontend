@@ -91,7 +91,7 @@ export default function VisitDetails() {
   console.log('STATE: ', state);
 
   useEffect(() => {
-    fetchData(2348, '21-413');
+    fetchData(109283, '21-008');
   }, []);
 
   console.log('state: ', state);

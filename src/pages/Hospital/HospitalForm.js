@@ -1,216 +1,364 @@
-import React from 'react';
-import { useHistory } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import { addAlert, addPatient } from '../../actions/actions';
+import React, { useState, useEffect } from 'react';
+import kfshAPI from '../../kfshAPI';
 
-import { Grid, makeStyles, Paper } from '@material-ui/core/';
+import {
+  Card,
+  Grid,
+  makeStyles,
+  Paper,
+  List,
+  ListItemText,
+  ListItem,
+  Divider,
+  Typography,
+  TableContainer,
+  TableBody,
+  TableRow,
+  TableCell,
+  TextField
+} from '@material-ui/core/';
 import { useForm, Form } from '../../hooks/useForm';
-import Input from '../../hooks/controls/Input';
 import Button from '../../hooks/controls/Button';
-import RadioButton from '../../hooks/controls/RadioButton';
 import DatePicker from '../../hooks/controls/DatePicker';
 import Select from '../../hooks/controls/Select';
+import Input from '../../hooks/controls/Input';
+import Report from '../../components/Report';
+import Popup from '../../components/Popup';
+import Alerts from '../../components/Alerts';
+import { addAlert, loadHospitalData } from '../../actions/actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
-const useStyles = makeStyles(theme =>({
-    pageContent: {
-      margin: theme.spacing(5),
-      padding: theme.spacing(5)
-    },
-}))
+const useStyles = makeStyles((theme) => ({
+  root: {
+    width: '100%',
+    // maxWidth: 360,
+    backgroundColor: theme.palette.background.paper
+  },
+  pageContent: {
+    margin: theme.spacing(5),
+    padding: theme.spacing(5)
+  },
+  title: {
+    margin: theme.spacing(2),
+    padding: theme.spacing(2),
+    color: '#253053',
+    fontWeight: 'bold'
+  },
+  submit: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'flex-end'
+  }
+}));
+
+const ageItems = [
+  { id: 'adult', title: 'Adult' },
+  { id: 'pediatric', title: 'Pediatric' }
+];
 
 const initialValues = {
-  name: '',
-  
+  location_name: '',
+  department_name: '',
+  department_id: '',
+  firstname: '',
+  lastname: '',
+  procedure_name: '',
+  cpt: '',
+  description: ''
 };
 
-export default function HospitalForm() {
+export default function HospitalForm({setOpenPopup}) {
   const classes = useStyles();
-  const history = useHistory();
   const dispatch = useDispatch();
+  const history = useHistory();
+  const state = useSelector((state) => state.hospital);
 
   // const validation = (fieldValues = formData) => {
   //   const temp = { ...errors };
-  //   if ('mrn' in fieldValues)
-  //     temp.mrn = formData.mrn.length !== 0 ? '' : 'Patient MRN is required';
-  //   if ('firstname' in fieldValues)
-  //     temp.firstname = formData.firstname ? '' : 'First Name is required';
-  //   if ('middlename' in fieldValues)
-  //     temp.middlename = formData.middlename ? '' : 'Middle Name is required';
-  //   if ('lastname' in fieldValues)
-  //     temp.lastname = formData.lastname ? '' : 'Last Name is required';
-  //   if ('gender' in fieldValues)
-  //     temp.gender = formData.gender ? '' : 'Please select gender';
-  //   if ('dob' in fieldValues) temp.dob = formData.dob ? '' : 'Please enter Date of Birth';
-  //   if ('nationality' in fieldValues)
-  //     temp.nationality = formData.nationality ? '' : 'Please select nationality';
+  //   if ('start_date' in fieldValues)
+  //     temp.start_date = formData.start_date ? '' : 'Please enter Start Date';
+  //   if ('end_date' in fieldValues)
+  //     temp.end_date = formData.end_date ? '' : 'Please enter End Date';
   //   if ('age_group' in fieldValues)
-  //     temp.age_group = formData.age_group ? '' : 'Please select age group';
+  //     temp.age_group = formData.age_group ? '' : 'Please select Age Group';
+  //   if ('physician_id' in fieldValues)
+  //     temp.physician_id = formData.physician_id ? '' : 'Please select a Physician';
 
   //   setErrors({ ...temp });
   //   if (fieldValues === formData) return Object.values(temp).every((i) => i === '');
   // };
 
   const { formData, handleReset, handleChange, errors, setErrors, setFormData } = useForm(
-    initialValues,
-    true,
+    true
     // validation
   );
 
-  const handleSubmit = async (e) => {
+  const handleLocation = async (e) => {
     e.preventDefault();
-    // if (validation()) {
-      // try {
-      //   await dispatch(addPatient(formData));
-      //   // history.goBack();
-      // } catch (err) {
-      //   err.forEach((error) => {
-      //     dispatch(addAlert(error, 'error'));
-      //   });
-      // }
-      // handleReset();
-    // }
-    window.alert("Clicked submit")
+    try {
+      await kfshAPI.addLocation(formData);
+      dispatch(addAlert(`Location ${formData.location_name} added successfully, Please refresh to reflect changes`));
+    } catch (err) {
+      dispatch(addAlert(err, 'error'));
+    }
+    handleReset();
+    history.push('/hospitaldata');
+    setOpenPopup(false)
+
   };
 
-  const genderItems = [
-    { id: 'male', title: 'Male' },
-    { id: 'female', title: 'Female' }
-  ];
+  const handleProcedure = async (e) => {
+    e.preventDefault();
+    try {
+      await kfshAPI.addProcedure(formData);
+      dispatch(addAlert(`Procedure ${formData.procedure_name} added successfully, Please refresh to reflect changes`));
+    } catch (err) {
+      dispatch(addAlert(err, 'error'));
+    }
+    handleReset();
+    setOpenPopup(false)
+    history.push('/hospitaldata');
+  };
 
-  const ageGroupItems = [
-    { id: 'adult', title: 'Adult' },
-    { id: 'pediatric', title: 'Pediatric' }
-  ];
+  const handleDepartment = async (e) => {
+    e.preventDefault();
+    try {
+      await kfshAPI.addDepartment(formData);
+      dispatch(addAlert(`Deparment ${formData.department_name} added successfully, Please refresh to reflect changes`));
+    } catch (err) {
+      dispatch(addAlert(err, 'error'));
+    }
+    handleReset();
+    history.push('/hospitaldata');
+    setOpenPopup(false)
+  };
 
-  const nationalityItems = [
-    { id: 'saudi', title: 'Saudi' },
-    { id: 'non-saudi', title: 'Non-Saudi' }
-  ];
+  const handleTest = async (e) => {
+    e.preventDefault();
+    try {
+      await kfshAPI.addTestCode(formData);
+      dispatch(
+        addAlert(`Test ${formData.cpt} - ${formData.description} added successfully, Please refresh to reflect changes`)
+      );
+    } catch (err) {
+      dispatch(addAlert(err, 'error'));
+    }
+    handleReset();
+    history.goBack()
+    setOpenPopup(false)
+  };
+
+  const handlePhysician = async (e) => {
+    e.preventDefault();
+    try {
+      await kfshAPI.addPhysician(formData);
+      dispatch(
+        addAlert(
+          `Physician ${formData.firstname} ${formData.lastname} added successfully, Please refresh to reflect changes`
+        )
+      );
+    } catch (err) {
+      dispatch(addAlert(err, 'error'));
+    }
+    handleReset();
+    history.goBack();
+    setOpenPopup(false)
+  };
+
+  useEffect(
+    () => {
+      const fetchData = async () => {
+        try {
+          await dispatch(loadHospitalData());
+        } catch (error) {
+          await dispatch(addAlert(error, 'error'));
+        }
+      };
+      fetchData();
+    },
+    [ dispatch ]
+  );
 
   return (
-    <Paper className={classes.pageContent}>
+    <div>
+      <Typography className={classes.title} variant='h4' align='center' component='div'>
+        Clinical Neurophysiology Lab
+      </Typography>
 
-    <Form onSubmit={handleSubmit}>
-      <Grid container spacing={3}>
-        <Grid item md={6} sm={8} xs={12}>
-          <Input
-            name='mrn'
-            label='Patient MRN'
-            value={formData.mrn}
-            onChange={handleChange}
-            id='mrn'
-            required
-            type='number'
-            error={errors.mrn}
-          />
-        </Grid>
+      <Paper className={classes.pageContent}>
+        <Grid container spacing={3}>
+          <Grid item md={6} sm={12} align='center'>
+            <Typography variant='h5' gutterBottom>
+              Add a new location
+            </Typography>
 
-        <Grid item md={4}>
-        <RadioButton
-            name='gender'
-            label='Gender'
-            value={formData.gender}
-            onChange={handleChange}
-            items={genderItems}
-            error={errors.gender}
-            default="male"
-          />
-        </Grid>
-      </Grid>
+            <Form onSubmit={handleLocation}>
+              <Input
+                name='location_name'
+                label='Location'
+                value={formData.location_name}
+                onChange={handleChange}
+                id='location_name'
+                error={errors.location}
+                required
+              />
 
-      <Grid container spacing={2}>
-        <Grid item xs={12} sm={6} md={4}>
-          <Input
-            name='firstname'
-            label='First Name'
-            value={formData.firstname}
-            onChange={handleChange}
-            id='firstname'
-            required
-            error={errors.firstname}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Input
-            name='middlename'
-            label='Middle Name'
-            value={formData.middlename}
-            onChange={handleChange}
-            id='middlename'
-            required
-            error={errors.middlename}
-          />
-        </Grid>
-        <Grid item xs={12} sm={6} md={4}>
-          <Input
-            name='lastname'
-            label='Last Name'
-            value={formData.lastname}
-            onChange={handleChange}
-            id='lastname'
-            required
-            error={errors.lastname}
-          />
-        </Grid>
+              <Button
+                fullWidth
+                size='large'
+                label='Add Location'
+                variant='contained'
+                onClick={handleLocation}
+                color='primary'
+              />
+            </Form>
+          </Grid>
 
-        <Grid item xs={12} sm={6} md={4}>
-        <DatePicker
-          name='dob'
-          label='Date of Birth'
-          value={formData.dob}
-          onChange={handleChange}
-          error={errors.dob}
-        />
-        </Grid>
-        
-        <Grid item xs={12} sm={6} md={4}>
-          <Select
-            name='nationality'
-            label='Nationality'
-            options={nationalityItems}
-            value={formData.nationality}
-            onChange={handleChange}
-            error={errors.nationality}
-          />
-        </Grid>
+          <Grid item md={6} sm={12} align='center'>
+            <Typography variant='h5' gutterBottom>
+              Add a new department
+            </Typography>
 
-        <Grid item xs={12} sm={6} md={4}>
-        <RadioButton
-          name='age_group'
-          label='Age Group'
-          value={formData.age_group}
-          onChange={handleChange}
-          items={ageGroupItems}
-          error={errors.age_group}
-          default="adult"
-        />
-        </Grid>
-      </Grid>
+            <Form onSubmit={handleDepartment}>
+              <Input
+                name='department_name'
+                label='Department'
+                value={formData.department_name}
+                onChange={handleChange}
+                id='department_name'
+                required
+              />
 
-        <Grid container spacing={2}>
-        <Grid item xs={12} sm={4} md={2}>
-          <Button 
-              fullWidth
-              size='large'
-              label='Submit'
-              variant='outlined'
-              type='submit'
-              color='primary'
-            />
+              <Button
+                fullWidth
+                size='large'
+                label='Add Department'
+                variant='contained'
+                onClick={handleDepartment}
+                color='primary'
+              />
+            </Form>
+          </Grid>
+        </Grid>
+      </Paper>
+
+      <Paper className={classes.pageContent}>
+        <Grid container spacing={3}>
+          <Grid item md={6} sm={12} align='center'>
+            <Typography variant='h5' gutterBottom>
+              Add a Test
+            </Typography>
+
+            <Form onSubmit={handleTest}>
+              <Input
+                name='cpt'
+                label='CPT Code'
+                value={formData.cpt}
+                onChange={handleChange}
+                id='cpt'
+                required
+              />
+
+              <Input
+                name='description'
+                label='CPT Description'
+                value={formData.description}
+                onChange={handleChange}
+                id='description'
+                required
+              />
+
+              <Button
+                fullWidth
+                size='large'
+                label='Add Test'
+                variant='contained'
+                onClick={handleTest}
+                color='primary'
+              />
+            </Form>
+          </Grid>
+
+          <Grid item md={6} sm={12} align='center'>
+            <Typography variant='h5' gutterBottom>
+              Add a Procedure
+            </Typography>
+
+            <Form onSubmit={handleProcedure}>
+              <Input
+                name='procedure_name'
+                label='Procedure'
+                value={formData.procedure_name}
+                onChange={handleChange}
+                id='procedure_name'
+                required
+              />
+
+              <Button
+                fullWidth
+                size='large'
+                label='Add Procedure'
+                variant='contained'
+                onClick={handleProcedure}
+                color='primary'
+              />
+            </Form>
+          </Grid>
+        </Grid>
+      </Paper>
+
+      <Paper className={classes.pageContent}>
+        <Typography variant='h5' align='center' gutterBottom>
+          Add a Physician
+        </Typography>
+
+        <Form onSubmit={handlePhysician}>
+          <Grid container spacing={1}>
+            <Grid item sm={4} xs={12}>
+              <Input
+                name='firstname'
+                label='First Name'
+                value={formData.firstname}
+                onChange={handleChange}
+                id='firstname'
+                required
+              />
             </Grid>
-            <Grid item xs={12} sm={4} md={2}>
-            <Button
-              fullWidth
-              size='large'
-              label='Reset'
-              variant='outlined'
-              onClick={handleReset}
-              color='secondary'
-            />
-            </Grid>
-        </Grid>
 
-    </Form>
-    </Paper>
+            <Grid item sm={4} xs={12}>
+              <Input
+                name='lastname'
+                label='Last Name'
+                value={formData.lastname}
+                onChange={handleChange}
+                id='lastname'
+                required
+              />
+            </Grid>
+
+            <Grid item sm={4} xs={12}>
+              <Select
+                name='department_id'
+                label='Department'
+                options={state.departments}
+                value={parseInt(formData.department_id)}
+                onChange={handleChange}
+              />
+            </Grid>
+            <Grid item md={4} sm={6} xs={12}>
+              <Button
+                fullWidth
+                size='large'
+                label='Add Physician'
+                variant='contained'
+                onClick={handlePhysician}
+                color='primary'
+              />
+            </Grid>
+          </Grid>
+        </Form>
+      </Paper>
+    </div>
   );
 }

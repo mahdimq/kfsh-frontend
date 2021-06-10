@@ -10,12 +10,14 @@ import {
   TableBody,
   TableCell,
   TableRow,
-  Toolbar
+  Toolbar,
+  Grid
 } from '@material-ui/core';
 import useTable from '../../hooks/useTable';
 import Input from '../../hooks/controls/Input';
 import { useFetchHook } from '../../hooks/useFetch';
 import { useSelector } from 'react-redux';
+import {useHistory} from 'react-router-dom'
 import {
   fetchUsers,
   registerUser,
@@ -57,9 +59,10 @@ const headCells = [
 function Users() {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory()
   const [ openPopup, setOpenPopup ] = useState(false);
   const [ loading ] = useFetchHook(fetchUsers());
-  const { users } = useSelector((state) => state.user);
+  const { users } = useSelector((state) => state.users);
   const [ filterFunc, setFilterFunc ] = useState({
     func: (items) => {
       return items;
@@ -120,6 +123,8 @@ function Users() {
     dispatch(addAlert('Deleted Successfully', 'error'));
   };
 
+  const handleClose = () => (setOpenPopup(false))
+
   {
     if (loading) return <Spinner />;
   }
@@ -134,8 +139,11 @@ function Users() {
         />
         <Paper className={classes.pageContent}>
           <Toolbar>
+          <Grid container spacing={1} alignItems="center">
+            <Grid item sm={8} xs={12}>
             <Input
-              className={classes.searchInput}
+            fullWidth
+              // className={classes.searchInput}
               label='Search Users'
               InputProps={{
                 startAdornment: (
@@ -146,13 +154,21 @@ function Users() {
               }}
               onChange={handleSearch}
             />
+            </Grid>
+
+            <Grid item xs/>
+            <Grid item >
+
             <Button
               label='Add New User'
               variant='outlined'
               startIcon={<Add />}
-              className={classes.newButton}
-              onClick={() => setOpenPopup(true)}
-            />
+              // className={classes.newButton}
+              // onClick={() => setOpenPopup(true)}
+              onClick={() => history.push('/signup')}
+              />
+              </Grid>
+              </Grid>
           </Toolbar>
 
           <TableContainer>
@@ -194,9 +210,9 @@ function Users() {
           <TablePagination count={users.length}/>
         </Paper>
 
-        <Popup openPopup={openPopup} setOpenPopup={setOpenPopup} title='Add New User'>
+        {/* <Popup openPopup={openPopup} handleClose={handleClose} title='Add New User'>
           <Registration recordForEdit={recordForEdit} users={users} addOrEdit={addOrEdit} />
-        </Popup>
+        </Popup> */}
 
         <ConfirmDialog
           confirmDialog={confirmDialog}

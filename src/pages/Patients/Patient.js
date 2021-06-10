@@ -20,15 +20,15 @@ import Input from '../../hooks/controls/Input';
 
 import { formatDate, age } from '../../helpers/dateFormatter';
 import { useFetchHook } from '../../hooks/useFetch';
-import { fetchVisits, getPatient, addSingleVisit, addAlert } from '../../actions/actions';
+import { fetchVisits, getPatient, fetchAllVisits } from '../../actions/actions';
 import { useSelector, useDispatch } from 'react-redux';
-import { useParams } from 'react-router';
-import VisitForm from '../Visits/VisitForm';
-import { Link } from 'react-router-dom';
+import VisitForm from '../Visits/VisitForm'
+import { Link, useHistory, useParams } from 'react-router-dom';
 import Button from '../../hooks/controls/Button';
 import Popup from '../../components/Popup';
 import Spinner from '../../components/Spinner';
 import NameBlock from '../../components/NameBlock';
+import kfshAPI from '../../kfshAPI';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -43,8 +43,9 @@ const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'none',
     color: 'inherit',
+    cursor: "pointer",
     '&:hover': {
-      backgroundColor: '#fffbf2 !important'
+      color: theme.palette.primary.main
     }
   },
   header: {
@@ -83,7 +84,6 @@ const useStyles = makeStyles((theme) => ({
 const headCells = [
   { id: 'log_num', label: 'NPL' },
   { id: 'ped_log_num', label: 'PNPL' },
-  { id: 'patient_mrn', label: 'MRN' },
   { id: 'procedure_id', label: 'Procedure' },
   { id: 'physician_id', label: 'Physician' },
   { id: 'user_id', label: 'Technologist' },
@@ -95,14 +95,21 @@ export default function Patient() {
   const { mrn } = useParams();
   const classes = useStyles();
   const [ loading ] = useFetchHook(getPatient(mrn));
-  const patient = useSelector((state) => state.patient);
+  const {patients} = useSelector((state) => state.patients);
+
+  // const dispatch = useDispatch()
+  // const {visits} = useSelector(state => state.patients)
+
   const [ openPopup, setOpenPopup ] = useState(false);
-  const dispatch = useDispatch();
   const [ filterFunc, setFilterFunc ] = useState({
     func: (items) => {
       return items;
     }
   });
+
+  // console.log("VISITS IN PATIENT COMP", visits[visits.length-1].log_num)
+
+  const history = useHistory()
 
   const { TableContainer, TableHeader, TablePagination, recordsAfterSorting } = useTable(
     headCells,
@@ -119,25 +126,38 @@ export default function Patient() {
   //   });
   // };
 
+
+  // useEffect(() => {
+  //   const getLogNums = async () => {
+  //     await dispatch(fetchAllVisits())
+  //   }
+  //   getLogNums()
+  // }, [dispatch])
+
+
   const addOrEdit = (data, handleReset) => {
-    async function add() {
-      try {
-        await dispatch(addSingleVisit(data));
-        // history.goBack();
-      } catch (err) {
-        dispatch(addAlert(err, 'error'));
-      }
-    }
-    add();
-    handleReset();
+    // async function add() {
+    //   try {
+    //     await dispatch(addSingleVisit(mrn, {...data, patient_mrn: parseInt(mrn)}));
+    //     // history.goBack();
+    //   } catch (err) {
+    //     dispatch(addAlert(err, 'error'));
+    //   }
+    // }
+    // add();
+    // handleReset();
     setOpenPopup(false);
   };
+  
+
+  const handleClose = () => (setOpenPopup(false))
+
 
   {
     if (loading) return <Spinner />;
   }
 
-  if (!patient.visits[0]) {
+  if (!patients.visits[0]) {
     return (
       <div>
         <Grid container className={classes.header} alignItems='center'>
@@ -154,7 +174,7 @@ export default function Patient() {
           </Grid>
 
           <Grid item sm={7}>
-            <NameBlock patient={patient} />
+            <NameBlock patient={patients} />
           </Grid>
         </Grid>
 
@@ -168,14 +188,16 @@ export default function Patient() {
               variant='outlined'
               startIcon={<Add />}
               className={classes.newButton}
-              onClick={() => setOpenPopup(true)}
+              // onClick={() => setOpenPopup(true)}
+              component={Link}
+              to={`/${mrn}/addvisit`}
             />
           </Toolbar>
         </Paper>
 
-        <Popup openPopup={openPopup} setOpenPopup={setOpenPopup} title='Add New Visit'>
-          <VisitForm addOrEdit={addOrEdit} />
-        </Popup>
+        {/* <Popup openPopup={openPopup} handleClose={handleClose} title='Add New Visit'>
+          <VisitForm addOrEdit={addOrEdit} users={users} data={state}/>
+        </Popup> */}
       </div>
     );
   }
@@ -202,14 +224,14 @@ export default function Patient() {
                 <MenuBook fontSize='large' color='primary' />
               </Card>
 
-              <Typography className={classes.titleText} variant='h6' component='div'>
-                Running Log:
+              <Typography className={classes.titleText} variant='body1' component='div'>
+                NPL#: 
               </Typography>
             </ListItem>
           </Grid>
 
           <Grid item sm={7}>
-            <NameBlock patient={patient} />
+            <NameBlock patient={patients} />
           </Grid>
         </Grid>
 
@@ -220,24 +242,29 @@ export default function Patient() {
               variant='outlined'
               startIcon={<Add />}
               className={classes.newButton}
-              onClick={() => setOpenPopup(true)}
+              // onClick={() => setOpenPopup(true)}
+              component={Link}
+              to={`/${mrn}/addvisit`}
             />
           </Toolbar>
 
-          <TableContainer>
             <h4>Patient component</h4>
+          <TableContainer>
 
             <TableHeader />
             <TableBody>
-              {recordsAfterSorting(patient.visits).map((item) => (
+              {recordsAfterSorting(patients.visits).map((item) => (
                 <TableRow
                   className={classes.link}
                   key={item.log_num}
-                  component={Link}
-                  to={`/visits/${item.log_num}`}>
+                  // component={Link}
+                  // to={`/visits/${item.log_num}`}
+                  onClick={() => history.push(`/visits/${item.log_num}`)}
+                  hover
+                  >
                   <TableCell>{item.log_num}</TableCell>
                   <TableCell>{item.ped_log_num}</TableCell>
-                  <TableCell>{item.patient_mrn}</TableCell>
+                  {/* <TableCell>{item.patient_mrn}</TableCell> */}
                   <TableCell>{item.procedure_name}</TableCell>
                   <TableCell>
                     {item.firstname} {item.lastname}
@@ -251,12 +278,12 @@ export default function Patient() {
               ))}
             </TableBody>
           </TableContainer>
-          <TablePagination count={patient.visits.length} />
+          <TablePagination count={patients.visits.length} />
         </Paper>
 
-        <Popup openPopup={openPopup} setOpenPopup={setOpenPopup} title='Add New Visit'>
-          <VisitForm addOrEdit={addOrEdit} />
-        </Popup>
+        {/* <Popup openPopup={openPopup} handleClose={handleClose} title='Add New Visit'>
+          <VisitForm addOrEdit={addOrEdit} users={users} data={state}/>
+        </Popup> */}
       </div>
     )
   );

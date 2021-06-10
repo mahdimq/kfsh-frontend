@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { decode } from 'jsonwebtoken';
 import { getUserData } from './actions/actions';
 
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
+import { createMuiTheme, ThemeProvider } from '@material-ui/core';
 
 // Import Components
 import Alerts from './components/Alerts';
@@ -24,6 +24,7 @@ const theme = createMuiTheme({
     },
     background: {
       default: "#f4f5fd"
+      // default: '#f4f5fd'
     }
   },
   // shape: {
@@ -43,14 +44,13 @@ const theme = createMuiTheme({
   // }
 });
 
-const useStyles = makeStyles({
-  appMain: {
-    paddingLeft: '220px'
-  }
-});
+// const useStyles = makeStyles({
+//   appMain: {
+//     paddingLeft: '220px'
+//   }
+// });
 
 function App() {
-  const classes = useStyles();
   const [ infoLoaded, setInfoLoaded ] = useState(false);
   const dispatch = useDispatch();
 

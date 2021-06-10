@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory, useParams } from 'react-router-dom';
 import PageHeader from '../../components/PageHeader';
 import { Add, MenuBook, Search } from '@material-ui/icons';
 import {
@@ -18,7 +18,6 @@ import Input from '../../hooks/controls/Input';
 import { formatDate, age } from '../../helpers/dateFormatter';
 import { useFetchHook } from '../../hooks/useFetch';
 import { addAlert, fetchAllVisits } from '../../actions/actions';
-import { useParams } from 'react-router';
 import { useDispatch, useSelector } from 'react-redux';
 import Spinner from '../../components/Spinner';
 import Button from '../../hooks/controls/Button';
@@ -35,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'none',
     color: 'inherit',
+    cursor: "pointer",
     '&:hover': {
       // backgroundColor: '#fffbf2 !important'
       backgroundColor: theme.palette.primary.light,
@@ -58,13 +58,15 @@ const headCells = [
 export default function Visits() {
   const classes = useStyles();
   const [ loading ] = useFetchHook(fetchAllVisits());
-  const { visits } = useSelector((state) => state.patient);
+  const { visits } = useSelector((state) => state.patients);
 
   const [ filterFunc, setFilterFunc ] = useState({
     func: (items) => {
       return items;
     }
   });
+
+  const history= useHistory();
 
   const { TableContainer, TableHeader, TablePagination, recordsAfterSorting } = useTable(
     // visits,
@@ -120,8 +122,8 @@ export default function Visits() {
           </Toolbar>
 
           
-            <TableContainer size="small">
               <h4>Visits component</h4>
+            <TableContainer size="small">
               <TableHeader />
 
               <TableBody>
@@ -129,8 +131,11 @@ export default function Visits() {
                   <TableRow
                     className={classes.link}
                     key={item.log_num}
-                    component={Link}
-                    to={`/visits/${item.log_num}`}>
+                    // component={Link}
+                    // to={`/visits/${item.log_num}`}
+                    onClick={() => history.push(`/visits/${item.log_num}`)}
+                    hover
+                    >
 
                     <TableCell>{formatDate(item.visit_date)}</TableCell>
                     <TableCell>{item.patient_mrn}</TableCell>

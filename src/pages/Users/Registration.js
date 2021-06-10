@@ -10,6 +10,7 @@ import { useForm, Form } from '../../hooks/useForm';
 import Input from '../../hooks/controls/Input';
 import Checkbox from '../../hooks/controls/Checkbox';
 import Button from '../../hooks/controls/Button';
+import { useHistory } from 'react-router';
 
 // function Copyright() {
 //   return (
@@ -46,6 +47,7 @@ const initialValues = {
 export default function SignUp({ addOrEdit, recordForEdit }) {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory()
 
   const validation = (fieldValues = formData) => {
     const temp = { ...errors };
@@ -79,6 +81,7 @@ export default function SignUp({ addOrEdit, recordForEdit }) {
         dispatch(addAlert(err, 'error'));
       }
       handleReset();
+      history.push("/users")
     }
   };
   

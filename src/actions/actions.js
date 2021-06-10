@@ -9,23 +9,11 @@ import {
   REMOVE_ALERTS,
   GET_USER_INFO,
   FETCH_PATIENT,
-  FETCH_PATIENTS,
-  FETCH_PATIENT_INFO,
   ADD_PATIENT,
-  // UPDATE_PATIENT
   GET_HOSPITAL_INFO,
-  DELETE_HOSPITAL_INFO,
-  ADD_HOSPITAL_INFO,
-  ADD_PROCEDURE,
-  GET_ALL_PROCEDURES,
-  GET_SINGLE_PROCEDURE,
-  DELETE_PROCEDURE,
-  GET_VISITS,
   GET_VISIT,
   ADD_VISIT,
-  DELETE_VISIT,
   FETCH_VISITTESTS,
-  FETCH_VISITTEST,
   ADD_VISITTEST
 } from './actionTypes';
 
@@ -182,7 +170,7 @@ export const logout = () => {
 };
 
 // ########################################################
-// ################ PATIENT STATE MANAGEMENT ################
+// ############### PATIENT STATE MANAGEMENT ###############
 // ########################################################
 // RETRIEVE PATIENT INFO FROM DATABASE
 export const getPatient = (mrn) => {
@@ -194,38 +182,50 @@ export const getPatient = (mrn) => {
 
 // got Patient
 const gotPatient = (patient) => {
-  return { type: FETCH_PATIENT_INFO, payload: patient };
+  return { type: FETCH_PATIENT, payload: patient };
+  // return { type: FETCH_PATIENT_INFO, payload: patient };
 };
 
 // =====================================================
 // GET ALL PATIENTS FROM DATABASE (test)
 export const getAllPatients = () => {
   return async function(dispatch) {
-    const patients = await kfshAPI.getAllPatients();
-    await dispatch(gotPatients(patients));
+    try {
+      const patients = await kfshAPI.getAllPatients();
+      if(!patients) dispatch(addAlert("No Patients found", 'warning'));
+      dispatch(gotPatient(patients));
+    } catch (err) {
+      err.forEach(error => {
+        dispatch(addAlert(error, 'error'))
+      })
+    }
+    // await dispatch(gotPatients(patients));
   };
 };
 
-const gotPatients = (patients) => {
-  return { type: FETCH_PATIENTS, payload: patients };
-};
+// got all patients
+// const gotPatients = (patients) => {
+  // return { type: FETCH_PATIENT, payload: patients };
+  // return { type: FETCH_PATIENTS, payload: patients };
+// };
+
 // =====================================================
 // ADD PATIENT TO DATABASE
 export const addPatient = (data) => {
   return async function(dispatch) {
     try {
       const patient = await kfshAPI.addPatient(data);
-      await dispatch(patientAdded(patient));
-      await dispatch(addAlert(`Patient added Successfully!`, 'success'));
+      dispatch(patientAdded(patient));
+      dispatch(addAlert(`Patient with MRN: ${data.mrn} added Successfully!`, 'success'));
     } catch (err) {
-      err.forEach((error) => dispatch(addAlert(error, 'error')));
+        dispatch(addAlert(err, 'error'));
     }
   };
 };
 
 // patient added
-const patientAdded = (patient) => {
-  return { type: ADD_PATIENT, payload: patient };
+const patientAdded = (patientData) => {
+  return { type: ADD_PATIENT, payload: patientData };
 };
 
 // =====================================================
@@ -234,16 +234,18 @@ export const findPatient = (mrn) => {
   return async function(dispatch) {
     try {
       const patient = await kfshAPI.getPatient(mrn);
-      return dispatch(getPatientInfo(patient));
+      return dispatch(gotPatient(patient));
+      // return dispatch(getPatientInfo(patient));
     } catch (err) {
       err.forEach((error) => dispatch(addAlert(error, 'error')));
     }
   };
 };
 
-function getPatientInfo(patient) {
-  return { type: FETCH_PATIENT, payload: patient };
-}
+// // got patient
+// function getPatientInfo(patientInfo) {
+//   return { type: FETCH_PATIENT, payload: patientInfo };
+// }
 
 // =====================================================
 
@@ -268,25 +270,10 @@ function getPatientInfo(patient) {
 export const loadHospitalData = () => {
   return async function(dispatch) {
     try {
-      const data = await Promise.all([kfshAPI.getLocations(),kfshAPI.getTests(), kfshAPI.getDepartments(), kfshAPI.getPhysicians()]) ;
+      const data = await Promise.all([kfshAPI.getProcedures(), kfshAPI.getLocations(), kfshAPI.getTestCodes(), kfshAPI.getDepartments(), kfshAPI.getPhysicians()])
+      
+       if (!data) await dispatch(addAlert('NO HOSPITAL DATA FOUND', 'warning'));
       await dispatch(gotData(data));
-      if (!data) await dispatch(addAlert('NO HOSPITAL DATA FOUND', 'warning'));
-//       const locations = await kfshAPI.getLocations() ;
-//       await dispatch(gotData(locations));
-//       if (!locations) await dispatch(addAlert('NO LOCATION DATA FOUND', 'warning'));
-
-//       const tests = await kfshAPI.getTests() ;
-//       await dispatch(gotData(tests));
-//       if (!tests) await dispatch(addAlert('NO TEST DATA FOUND', 'warning'));
-
-//       const physicians = await kfshAPI.getPhysicians();
-//       await dispatch(gotData(physicians));
-//       if (!physicians) await dispatch(addAlert('NO PHYSICIAN DATA FOUND', 'warning'));
-
-//       const departments = await kfshAPI.getDepartments();
-//       await dispatch(gotData(departments));
-//       if (!departments) await dispatch(addAlert('NO PHYSICIAN DATA FOUND', 'warning'));
-
     } catch (err) {
       err.forEach((error) => {
         dispatch(addAlert(error, 'error'));
@@ -294,138 +281,10 @@ export const loadHospitalData = () => {
     }
   };
 };
-
-// export const loadLocations = () => {
-//   return async function(dispatch) {
-//     try {
-//       // const data = await Promise.all([kfshAPI.getLocations(),kfshAPI.getTests(), kfshAPI.getDepartments(), kfshAPI.getPhysicians()]) ;
-//       // await dispatch(gotData(data));
-//       // if (!data) await dispatch(addAlert('NO HOSPITAL DATA FOUND', 'warning'));
-//       const locations = await kfshAPI.getLocations();
-//       await dispatch(gotData(locations));
-//       if (!locations) await dispatch(addAlert('NO LOCATION DATA FOUND', 'warning'));
-//     } catch (err) {
-//       err.forEach((error) => {
-//         dispatch(addAlert(error, 'error'));
-//       });
-//     }
-//   };
-// };
-// export const loadDepartments = () => {
-//   return async function(dispatch) {
-//     try {
-//       const departments = await kfshAPI.getDepartments();
-//       await dispatch(gotData(departments));
-//       if (!departments) await dispatch(addAlert('NO PHYSICIAN DATA FOUND', 'warning'));
-//     } catch (err) {
-//       err.forEach((error) => {
-//         dispatch(addAlert(error, 'error'));
-//       });
-//     }
-//   };
-// };
-
-// export const loadTests = () => {
-//   return async function(dispatch) {
-//     try {
-//       const tests = await kfshAPI.getTests();
-//       await dispatch(gotData(tests));
-//       if (!tests) await dispatch(addAlert('NO TEST DATA FOUND', 'warning'));
-//     } catch (err) {
-//       err.forEach((error) => {
-//         dispatch(addAlert(error, 'error'));
-//       });
-//     }
-//   };
-// };
-
-// export const loadPhysicians = () => {
-//   return async function(dispatch) {
-//     try {
-//       const physicians = await kfshAPI.getPhysicians();
-//       await dispatch(gotData(physicians));
-//       if (!physicians) await dispatch(addAlert('NO PHYSICIAN DATA FOUND', 'warning'));
-//     } catch (err) {
-//       err.forEach((error) => {
-//         dispatch(addAlert(error, 'error'));
-//       });
-//     }
-//   };
-// };
 
 // gotData from database
 const gotData = (data) => {
   return { type: GET_HOSPITAL_INFO, payload: data };
-};
-
-// ########################################################
-// ############# PROCEDURE STATE MANAGEMENT ###############
-// ########################################################
-// GET ALL PROCEDURES FROM DATABASE
-export const fetchAllProcedures = () => {
-  return async function(dispatch) {
-    try {
-      const procedures = await kfshAPI.getProcedures();
-      await dispatch(gotProcedures(procedures));
-      if (!procedures)
-        await dispatch(addAlert('NO PROCEDURES FOUND IN DATABASE', 'warning'));
-    } catch (err) {
-      err.forEach((error) => {
-        dispatch(addAlert(error, 'error'));
-      });
-    }
-  };
-};
-
-const gotProcedures = (data) => {
-  return { type: GET_ALL_PROCEDURES, payload: data };
-};
-
-// GET SINGLE PROCEDURE BY PATIENT
-export const fetchSingleProcedure = (name) => {
-  return async function(dispatch) {
-    try {
-      const procedure = await kfshAPI.getProcedureByMrn(name);
-      await dispatch(gotProcedure(procedure));
-    } catch (err) {
-      err.forEach((error) => dispatch(addAlert(error, 'error')));
-    }
-  };
-};
-
-const gotProcedure = (procedure) => {
-  return { type: GET_SINGLE_PROCEDURE, payload: procedure };
-};
-
-// ALL SINGLE PROCEDURE
-export const addSingleProcedure = (data) => {
-  return async function(dispatch) {
-    try {
-      const procedure = await kfshAPI.addProcedure(data);
-      await dispatch(procedureAdded(procedure));
-      dispatch(addAlert(`Procedure added Successfully!`, 'success'));
-    } catch (err) {
-      err.forEach((error) => dispatch(addAlert(error, 'error')));
-    }
-  };
-};
-
-const procedureAdded = (procedure) => {
-  return { type: ADD_PROCEDURE, payload: procedure };
-};
-
-// REMOVE SINGLE PROCEDURE
-export const removeProcedure = (mrn, token) => {
-  return async function(dispatch) {
-    try {
-      await kfshAPI.deleteProcedure(mrn, token);
-      dispatch(addAlert(`Procedure for Patient ${mrn} has been deleted`, 'error'));
-    } catch (err) {
-      err.forEach((error) => {
-        dispatch(addAlert(error, 'error'));
-      });
-    }
-  };
 };
 
 // ########################################################
@@ -436,12 +295,12 @@ export const removeProcedure = (mrn, token) => {
 export const fetchVisits = (log) => {
 	return async function (dispatch) {
 		try {
-			const res = await kfshAPI.getVisits(log);
-			if (!res) await dispatch(addAlert('NO VISITS FOUND', 'warning'));
+      const res = await kfshAPI.getVisits(log);
+      if (!res) await dispatch(addAlert('NO VISITS FOUND', 'warning'));
 			await dispatch(gotVisit(res));
 		} catch (err) {
-			err.forEach((error) => {
-				dispatch(addAlert(error, 'error'));
+      err.forEach((error) => {
+        dispatch(addAlert(error, 'error'));
 			});
 		}
 	};
@@ -451,7 +310,8 @@ export const fetchVisits = (log) => {
 export const fetchVisitDetail = (log) => {
   return async function(dispatch) {
     const res = await kfshAPI.getVisitDetail(log);
-    await dispatch(gotVisitDetail(res));
+    await dispatch(gotVisit(res));
+    // await dispatch(gotVisitDetail(res));
   };
 };
 
@@ -460,22 +320,27 @@ export const fetchVisitDetail = (log) => {
 export const fetchAllVisits = () => {
   return async function(dispatch) {
     const res = await kfshAPI.getAllVisits();
-    await dispatch(gotVisits(res));
+    await dispatch(gotVisit(res));
   };
 };
 
 // ADD VISIT FOR SINGLE PATIENT
 export const addSingleVisit = (mrn, data) => {
   return async function(dispatch) {
-    const res = await kfshAPI.addVisit(mrn, data);
-    await dispatch(addedVisit(res));
+    try {
+      const res = await kfshAPI.addVisit(mrn, data);
+      await dispatch(addedVisit(res));
+      dispatch(addAlert(`Visit for patient: ${mrn} added successfully, please enter tests done!`, 'success'));
+    } catch (err) {
+      dispatch(addAlert(err, 'error'))
+    }
   };
 };
 
-// got visits
-const gotVisits = (data) => {
-  return { type: GET_VISITS, payload: data};
-};
+// // got visits
+// const gotVisits = (data) => {
+//   return { type: GET_VISITS, payload: data};
+// };
 
 // got visits
 const gotVisit = (data) => {
@@ -488,7 +353,7 @@ const addedVisit = (data) => {
 }
 
 // ########################################################
-// ############# VISIT TEST STATE MANAGEMENT ###############
+// ############# VISIT TEST STATE MANAGEMENT ##############
 // ########################################################
 
 // GET VISIT DETAILS FOR ALL PATIENTS
@@ -504,7 +369,19 @@ const gotVisitDetails = (data) => {
   return { type: FETCH_VISITTESTS, payload: data};
 };
 
-// got visits
-const gotVisitDetail = (data) => {
-  return { type: FETCH_VISITTEST, payload: data};
+// ADD VISIT DETAIL FOR SINGLE PATIENT
+export const addVisitDetail = (log, data) => {
+  return async function(dispatch){
+    const res = await kfshAPI.addVisitDetail(log, data);
+    await dispatch(addedVisitDetail(res))
+  };
 };
+
+// added visit details
+const addedVisitDetail = (data) => {
+  return {type: ADD_VISITTEST, payload: data}
+}
+// // got visits
+// const gotVisitDetail = (data) => {
+//   return { type: FETCH_VISITTEST, payload: data};
+// };

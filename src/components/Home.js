@@ -1,57 +1,9 @@
-// import React from 'react';
-// import { useHistory } from 'react-router-dom';
-// import { useSelector, useDispatch } from 'react-redux';
-
-// import { Button, Container, Typography } from '@material-ui/core';
-
-// function Home() {
-//   const dispatch = useDispatch();
-//   const history = useHistory();
-//   const user = useSelector((state) => state.user);
-//   const patient = useSelector((state) => state.patient);
-
-//   // const searchPatient = async (mrn) => {
-//   // 	try {
-//   // 		await dispatch(getPatient(mrn))
-
-//   // 	} catch (err){
-//   // 		console.error(err);
-//   // 	}
-//   // }
-//   return (
-//     <Container component='main' maxWidth='md'>
-//       {/* <Search callback={searchPatient} /> */}
-//       {/* <PatientInfo data={patient.patient}/> */}
-//       <div style={{textAlign: 'center'}}>
-//         <Typography align="center" gutterBottom variant="h2">KFSH Neurophysiology</Typography >
-//         <Typography align="center" variant="h3">Clinical Data Management</Typography >
-//         <Typography gutterBottom align="center" variant="h3">Intuitive. Beautiful. Simple.</Typography >
-
-//       {user.token ? (
-//         <Typography align="center" color="secondary" variant="h4">Hello {user.firstname}!</Typography>
-//         ) : (
-//           <Button
-//           onClick={() => history.push('/login')}
-//           variant='contained'
-//           size='large'
-//           color='primary'>
-//           Login
-//         </Button>
-//       )}
-//       </div>
-//     </Container>
-//   );
-// }
-// export default Home;
-
 import React from 'react';
 import {
   Box,
   Paper,
   Grid,
   Typography,
-  Card,
-  CardContent,
   makeStyles
 } from '@material-ui/core';
 import Button from '../hooks/controls/Button';
@@ -60,7 +12,7 @@ import report from '../images/report.jpg';
 import kfshLogo from '../images/kfshLogo.png';
 
 import { useHistory } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -122,7 +74,7 @@ const useStyles = makeStyles((theme) => ({
 export default function Home() {
   const classes = useStyles();
   const history = useHistory();
-  const user = useSelector((state) => state.user);
+  const user = useSelector((state) => state.users);
 
   return (
     <Box className={classes.root}>

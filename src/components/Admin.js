@@ -34,10 +34,19 @@ function Admin() {
 
       <Button
         component={Link}
-        to={`/hospital`}
+        to={`/hospitaldata`}
         className={classes.button}
-        label='Hospital Form'
+        label='Hospital Data'
         variant='outlined'
+      />
+
+      <Button
+        component={Link}
+        to={`/reports`}
+        className={classes.button}
+        label='Get Reports'
+        variant='outlined'
+        color="secondary"
       />
     </div>
   );
