@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LocalHospital, MenuBook, Add } from '@material-ui/icons';
+import { LocalHospital, MenuBook, Add, ArrowBackIosOutlined } from '@material-ui/icons';
 import { Search } from '@material-ui/icons';
 import {
   InputAdornment,
@@ -22,13 +22,14 @@ import { formatDate, age } from '../../helpers/dateFormatter';
 import { useFetchHook } from '../../hooks/useFetch';
 import { fetchVisits, getPatient, fetchAllVisits } from '../../actions/actions';
 import { useSelector, useDispatch } from 'react-redux';
-import VisitForm from '../Visits/VisitForm'
+import VisitForm from '../Visits/VisitForm';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import Button from '../../hooks/controls/Button';
 import Popup from '../../components/Popup';
 import Spinner from '../../components/Spinner';
 import NameBlock from '../../components/NameBlock';
 import kfshAPI from '../../kfshAPI';
+import Home from '../../components/Home';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   link: {
     textDecoration: 'none',
     color: 'inherit',
-    cursor: "pointer",
+    cursor: 'pointer',
     '&:hover': {
       color: theme.palette.primary.main
     }
@@ -72,8 +73,9 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: theme.spacing(2)
   },
   newButton: {
-    position: 'absolute',
-    right: '10px'
+    // position: 'absolute',
+    // right: '10px'
+    marginLeft: theme.spacing(2)
   },
   divider: {
     backgroundColor: '#faf7f0',
@@ -95,10 +97,10 @@ export default function Patient() {
   const { mrn } = useParams();
   const classes = useStyles();
   const [ loading ] = useFetchHook(getPatient(mrn));
-  const {patients} = useSelector((state) => state.patients);
-
-  // const dispatch = useDispatch()
-  // const {visits} = useSelector(state => state.patients)
+  const { patients } = useSelector((state) => state.patients);
+  const user = useSelector((state) => state.users);
+  // const {visits} = useSelector((state) => state.patients);
+  // const [isLoading, setIsLoading] = useState(true)
 
   const [ openPopup, setOpenPopup ] = useState(false);
   const [ filterFunc, setFilterFunc ] = useState({
@@ -107,9 +109,9 @@ export default function Patient() {
     }
   });
 
-  // console.log("VISITS IN PATIENT COMP", visits[visits.length-1].log_num)
+  const dispatch = useDispatch();
 
-  const history = useHistory()
+  const history = useHistory();
 
   const { TableContainer, TableHeader, TablePagination, recordsAfterSorting } = useTable(
     headCells,
@@ -126,15 +128,22 @@ export default function Patient() {
   //   });
   // };
 
+  
+  // useEffect(
+  //   () => {
+  //     setIsLoading(true)
+  //     const getLogNums = async () => {
+  //       await dispatch(fetchAllVisits());
+  //     };
+  //     return () => {
+  //       getLogNums()
+  //       setIsLoading(false)
+  //     }
+  //   },
+  //   [ dispatch ]
+  // );
 
-  // useEffect(() => {
-  //   const getLogNums = async () => {
-  //     await dispatch(fetchAllVisits())
-  //   }
-  //   getLogNums()
-  // }, [dispatch])
-
-
+  // !isLoading && console.log("VISITS IN PATIENT COMP: ", visits[visits.length-1].log_num)
   const addOrEdit = (data, handleReset) => {
     // async function add() {
     //   try {
@@ -148,16 +157,16 @@ export default function Patient() {
     // handleReset();
     setOpenPopup(false);
   };
-  
 
-  const handleClose = () => (setOpenPopup(false))
-
+  const handleClose = () => setOpenPopup(false);
 
   {
-    if (loading) return <Spinner />;
+    if (loading && user.token) return <Spinner />;
   }
 
-  if (!patients.visits[0]) {
+  {if (!user.token) return <Home />}
+
+  if (patients.visits.length === 0) {
     return (
       <div>
         <Grid container className={classes.header} alignItems='center'>
@@ -180,19 +189,37 @@ export default function Patient() {
 
         <Paper className={classes.notFound}>
           <Toolbar>
+          <Grid item>
+            
             <Typography variant='h4' component='div'>
               No Visits Found
             </Typography>
-            <Button
-              label='Add New Visit'
-              variant='outlined'
-              startIcon={<Add />}
-              className={classes.newButton}
-              // onClick={() => setOpenPopup(true)}
-              component={Link}
-              to={`/${mrn}/addvisit`}
-            />
+
+            </Grid>
+
+            <Grid item xs />
+
+            <Grid item>
+              <Button
+                label='Go Back'
+                variant='outlined'
+                startIcon={<ArrowBackIosOutlined />}
+                onClick={() => history.goBack()}
+                color='secondary'
+              />
+
+              <Button
+                label='Add New Visit'
+                variant='outlined'
+                startIcon={<Add />}
+                className={classes.newButton}
+                // onClick={() => setOpenPopup(true)}
+                component={Link}
+                to={`/${mrn}/addvisit`}
+              />
+            </Grid>
           </Toolbar>
+
         </Paper>
 
         {/* <Popup openPopup={openPopup} handleClose={handleClose} title='Add New Visit'>
@@ -224,8 +251,8 @@ export default function Patient() {
                 <MenuBook fontSize='large' color='primary' />
               </Card>
 
-              <Typography className={classes.titleText} variant='body1' component='div'>
-                NPL#: 
+              <Typography className={classes.titleText} variant='h6' component='div'>
+                Running Log: 
               </Typography>
             </ListItem>
           </Grid>
@@ -237,6 +264,18 @@ export default function Patient() {
 
         <Paper className={classes.pageContent}>
           <Toolbar>
+            <Grid item >
+
+            <Button
+              label='Go Back'
+              variant='outlined'
+              startIcon={<ArrowBackIosOutlined />}
+              onClick={() => history.goBack()}
+              color='secondary'
+            />
+</Grid>
+            <Grid item xs/>
+            <Grid item >
             <Button
               label='Add New Visit'
               variant='outlined'
@@ -245,12 +284,12 @@ export default function Patient() {
               // onClick={() => setOpenPopup(true)}
               component={Link}
               to={`/${mrn}/addvisit`}
-            />
+              />
+              </Grid>
           </Toolbar>
 
-            <h4>Patient component</h4>
+          <h4>Patient component</h4>
           <TableContainer>
-
             <TableHeader />
             <TableBody>
               {recordsAfterSorting(patients.visits).map((item) => (
@@ -260,8 +299,7 @@ export default function Patient() {
                   // component={Link}
                   // to={`/visits/${item.log_num}`}
                   onClick={() => history.push(`/visits/${item.log_num}`)}
-                  hover
-                  >
+                  hover>
                   <TableCell>{item.log_num}</TableCell>
                   <TableCell>{item.ped_log_num}</TableCell>
                   {/* <TableCell>{item.patient_mrn}</TableCell> */}

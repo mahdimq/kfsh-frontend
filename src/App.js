@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { decode } from 'jsonwebtoken';
 import { getUserData } from './actions/actions';
 
-import { createMuiTheme, ThemeProvider } from '@material-ui/core';
+import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
 
 // Import Components
 import Alerts from './components/Alerts';
@@ -44,15 +44,17 @@ const theme = createMuiTheme({
   // }
 });
 
-// const useStyles = makeStyles({
-//   appMain: {
-//     paddingLeft: '220px'
-//   }
-// });
+const useStyles = makeStyles({
+  appMain: {
+    paddingLeft: '220px'
+  }
+});
 
 function App() {
   const [ infoLoaded, setInfoLoaded ] = useState(false);
   const dispatch = useDispatch();
+
+  console.log("INFOLOADED IN APP: ", infoLoaded)
 
   /*Check if user is logged in, load token from localstorage
     and save in state if available */

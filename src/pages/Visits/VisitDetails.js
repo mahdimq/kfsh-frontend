@@ -48,7 +48,7 @@ const detailHeadCells = [
 ];
 
 export default function VisitDetails() {
-  const [ state, setState ] = useState({ visits: [], visitDetails: [] });
+  const [ state, setState ] = useState([]);
   const classes = useStyles();
 
   const [ loading, setLoading ] = useState(true);
@@ -64,15 +64,13 @@ export default function VisitDetails() {
   const fetchData = async (mrn, log) => {
     setLoading(true);
     try {
-      const result = await Promise.all([
-        kfshAPI.getPatient(mrn),
-        kfshAPI.getVisits(log)
-      ]);
+      // const result = await Promise.all([
+      //   kfshAPI.getPatient(mrn),
+      //   kfshAPI.getVisits(log)
+      // ]);
+      const result = await kfshAPI.getVisits(mrn)
       // console.log('RESULT IN COMP: ', result);
-      setState({
-        visits: result[0].visits,
-        visitDetails: result[1].visitDetails
-      });
+      setState(result);
       // setState((prev) => ({
       // 	...prev,
       // 	rows:
@@ -91,7 +89,7 @@ export default function VisitDetails() {
   console.log('STATE: ', state);
 
   useEffect(() => {
-    fetchData(109283, '21-008');
+    fetchData(123456);
   }, []);
 
   console.log('state: ', state);
@@ -103,7 +101,7 @@ export default function VisitDetails() {
       <TableContainer>
         <TableHeader />
 
-        {state.visits.map((item) => (
+        {state.map((item) => (
           <React.Fragment>
             <TableRow key={item.log_num}>
               <TableCell>
@@ -127,6 +125,8 @@ export default function VisitDetails() {
                 {item.user_firstname} {item.user_lastname}
               </TableCell>
               <TableCell>{item.location_name}</TableCell>
+              <TableCell>{item.p_firstname}</TableCell>
+              <TableCell>{item.p_lastname}</TableCell>
               <TableCell>{formatDate(item.visit_date)}</TableCell>
             </TableRow>
 
@@ -142,7 +142,7 @@ export default function VisitDetails() {
                       <TableDetailsHeader />
 
                       <TableBody>
-                        {state.visitDetails.map((item) => (
+                        
                           <TableRow key={item.cpt}>
                             <TableCell component='th' scope='row'>
                               {item.cpt}
@@ -152,7 +152,6 @@ export default function VisitDetails() {
                             </TableCell>
                             <TableCell>{item.quantity}</TableCell>
                           </TableRow>
-                        ))}
                       </TableBody>
                     </TableContainer>
                   </Box>

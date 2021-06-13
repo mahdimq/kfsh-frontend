@@ -79,7 +79,7 @@ export default function NameBlock({ patient }) {
             </ListItemAvatar>
             <ListItemText
               primary={formatDate(patient.dob)}
-              secondary={`Age: ${age(patient.dob)} yrs`}
+              secondary={`Age: ${age(patient.dob) > 1 ? age(patient.dob) + 'yrs' : age(patient.dob) + 'yr'}`}
             />
           </ListItem>
         </Grid>

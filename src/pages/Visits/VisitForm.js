@@ -43,6 +43,9 @@ export default function VisitForm() {
   // const {visits} = useSelector(state => state.patients)
   const history = useHistory();
   const dispatch = useDispatch();
+  
+
+  
 
   const validation = (fieldValues = formData) => {
     const temp = { ...errors };

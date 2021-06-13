@@ -76,7 +76,7 @@ export default function PatientForm({ addOrEdit }) {
       }
       
       handleReset();
-      addOrEdit(formData, handleReset)
+      // addOrEdit(formData, handleReset)
       history.push('/patients');
     }
   };
@@ -152,7 +152,7 @@ export default function PatientForm({ addOrEdit }) {
             <Input
               name='firstname'
               label='First Name'
-              value={formData.firstname}
+              value={formData.firstname.toLowerCase()}
               onChange={handleChange}
               id='firstname'
               required
@@ -163,7 +163,7 @@ export default function PatientForm({ addOrEdit }) {
             <Input
               name='middlename'
               label='Middle Name'
-              value={formData.middlename}
+              value={formData.middlename.toLowerCase()}
               onChange={handleChange}
               id='middlename'
               required
@@ -174,7 +174,7 @@ export default function PatientForm({ addOrEdit }) {
             <Input
               name='lastname'
               label='Last Name'
-              value={formData.lastname}
+              value={formData.lastname.toLowerCase()}
               onChange={handleChange}
               id='lastname'
               required

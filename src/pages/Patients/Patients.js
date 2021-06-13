@@ -22,6 +22,7 @@ import Popup from '../../components/Popup';
 import Button from '../../hooks/controls/Button';
 import { addPatient, addAlert, getAllPatients } from '../../actions/actions';
 import Spinner from '../../components/Spinner';
+import Home from '../../components/Home'
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -56,6 +57,7 @@ function Patients() {
   const dispatch = useDispatch();
   const [ loading ] = useFetchHook(getAllPatients());
   const { patients } = useSelector((state) => state.patients);
+  const user = useSelector((state) => state.users);
   const [ openPopup, setOpenPopup ] = useState(false);
   const [ filterFunc, setFilterFunc ] = useState({
     func: (items) => {
@@ -100,8 +102,10 @@ function Patients() {
   const handleClose = () => setOpenPopup(false);
 
   {
-    if (loading) return <Spinner />;
+    if (loading && user.token) return <Spinner />;
   }
+
+  { if (!user.token) return <Home />}
 
   return (
     <div>

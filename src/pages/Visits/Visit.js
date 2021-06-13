@@ -42,6 +42,7 @@ import Popup from '../../components/Popup';
 import Spinner from '../../components/Spinner';
 import TestForm from './TestForm';
 import NameBlock from '../../components/NameBlock';
+import Home from '../../components/Home';
 
 const useStyles = makeStyles((theme) => ({
   pageContent: {
@@ -101,6 +102,8 @@ export default function Visit() {
   const classes = useStyles();
   const [ loading ] = useFetchHook(fetchVisits(log));
   const {visits} = useSelector((state) => state.patients);
+  const user = useSelector((state) => state.users);
+
   const [ openPopup, setOpenPopup ] = useState(false);
   const dispatch = useDispatch();
 
@@ -142,8 +145,10 @@ export default function Visit() {
   const handleClose = () => setOpenPopup(false);
 
   {
-    if (loading) return <Spinner />;
+    if (user.token && loading) return <Spinner />;
   }
+
+  { if (!user.token) return <Home /> }
 
   if (!visits.visitDetails[0]) {
     return (
@@ -370,6 +375,7 @@ export default function Visit() {
               Visit Details
               </Typography>
             </Grid>
+
             <Grid item xs />
             <Grid item>
 
@@ -380,6 +386,7 @@ export default function Visit() {
               onClick={() => history.goBack()}
               color="secondary"
               />
+
               <Button
                 label='Add Test'
                 variant='outlined'
