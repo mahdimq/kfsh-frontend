@@ -147,7 +147,6 @@ function Patients() {
           </Grid>
         </Toolbar>
 
-        <h4>Patients component</h4>
         <TableContainer size='small'>
           <TableHeader />
 

@@ -46,8 +46,7 @@ export default function SignUp({ addOrEdit, recordForEdit }) {
   const classes = useStyles();
   const dispatch = useDispatch();
   const history = useHistory();
-
-  const user = useSelector((state) => state.users);
+  const user = useSelector(state => state.users)
 
   const validation = (fieldValues = formData) => {
     const temp = { ...errors };
@@ -75,7 +74,7 @@ export default function SignUp({ addOrEdit, recordForEdit }) {
     e.preventDefault();
     if (validation()) {
       try {
-        addOrEdit(formData, handleReset);
+        // addOrEdit(formData, handleReset);
         await dispatch(registerUser(formData));
       } catch (err) {
         dispatch(addAlert(err, 'error'));
@@ -86,17 +85,17 @@ export default function SignUp({ addOrEdit, recordForEdit }) {
   };
 
   {
-    if (!user.token && !user.admin)
+    if (!user.token)
       return (
         <div className={classes.paper}>
           <Typography variant='h4' align='center' gutterBottom>
-            Please ask admin to add a new user
+            Please login to add a new user
           </Typography>
           <Button
-            label='Home'
+            label='Login'
             size='large'
             color='secondary'
-            onClick={() => history.push('/')}
+            onClick={() => history.push('/login')}
           />
         </div>
       );
@@ -104,10 +103,10 @@ export default function SignUp({ addOrEdit, recordForEdit }) {
 
   return (
     <Container component='main' maxWidth='xs'>
-      {!user.admin ? (
+      {user.token && !user.is_admin ? (
         <div style={{margin: '2em', textAlign: "center"}}>
           <Typography variant='h4' component='div'>
-            You are not an admin
+            Unauthorized. Admin privelages required!
           </Typography>
           <Button label="Home" onClick={() => history.push('/')} size="large" color="secondary" variant="contained" />
         </div>

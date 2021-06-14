@@ -87,7 +87,7 @@ export default function TestForm({ setOpenPopup, log }) {
       testData.forEach(async (item) => {
         await dispatch(addVisitDetail(log, item));
       });
-      dispatch(addAlert('Tests added successfully!', 'success'));
+      dispatch(addAlert('Tests added successfully!, Please refresh to reflect changes', 'success'));
     } catch (err) {
       dispatch(addAlert(err, 'error'));
     }

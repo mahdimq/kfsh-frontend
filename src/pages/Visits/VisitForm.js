@@ -1,16 +1,22 @@
-import React, {useEffect} from 'react';
+import React, { useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addAlert, addSingleVisit, fetchUsers, loadHospitalData, fetchAllVisits } from '../../actions/actions';
+import {
+  addAlert,
+  addSingleVisit,
+  fetchUsers,
+  loadHospitalData,
+  fetchAllVisits
+} from '../../actions/actions';
 
-import { Grid, makeStyles, Paper, Typography, Toolbar} from '@material-ui/core/';
+import { Grid, makeStyles, Paper, Typography, Toolbar } from '@material-ui/core/';
 import { useForm, Form } from '../../hooks/useForm';
 import Input from '../../hooks/controls/Input';
 import Button from '../../hooks/controls/Button';
 import DatePicker from '../../hooks/controls/DatePicker';
 import Select from '../../hooks/controls/Select';
-import ActionButton from '../../hooks/controls/ActionButton'
-import {useParams} from 'react-router'
+import ActionButton from '../../hooks/controls/ActionButton';
+import { useParams } from 'react-router';
 import { Close } from '@material-ui/icons';
 
 const initialValues = {
@@ -24,7 +30,6 @@ const initialValues = {
   visit_date: new Date()
 };
 
-
 const useStyles = makeStyles((theme) => ({
   pageContent: {
     margin: theme.spacing(5),
@@ -36,24 +41,28 @@ const useStyles = makeStyles((theme) => ({
 // export default function VisitForm({data, users, addOrEdit}) {
 export default function VisitForm() {
   const classes = useStyles();
-  const {mrn} = useParams();
-  const {users} = useSelector((state) => state.users);
-  const {procedures, physicians, departments, locations} = useSelector(state => state.hospital)
+  const { mrn } = useParams();
+  const { users } = useSelector((state) => state.users);
+  const { procedures, physicians, departments, locations } = useSelector(
+    (state) => state.hospital
+  );
 
-  // const {visits} = useSelector(state => state.patients)
+  const { visits } = useSelector((state) => state.patients);
   const history = useHistory();
   const dispatch = useDispatch();
-  
-
-  
 
   const validation = (fieldValues = formData) => {
     const temp = { ...errors };
     if ('log_num' in fieldValues)
-      temp.log_num = (formData.log_num ? '' : 'NPL Number is required') || (!formData.log_num.includes("-") ? 'Please input NPL Number correctly' : '');
-      
+      temp.log_num =
+        (formData.log_num ? '' : 'NPL Number is required') ||
+        (!formData.log_num.includes('-') ? 'Please input NPL Number correctly' : '');
+
     if ('ped_log_num' in fieldValues && fieldValues.ped_log_num)
-      temp.ped_log_num =  formData.ped_log_num.includes("P") ||  formData.ped_log_num.includes("p") ? '' : 'Please include the "P" before the Log Num';
+      temp.ped_log_num =
+        formData.ped_log_num.includes('P') || formData.ped_log_num.includes('p')
+          ? ''
+          : 'Please include the "P" before the Log Num';
     if ('procedure_id' in fieldValues)
       temp.procedure_id = formData.procedure_id ? '' : 'Procedure is required';
     if ('location_id' in fieldValues)
@@ -71,25 +80,27 @@ export default function VisitForm() {
     validation
   );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        await dispatch(loadHospitalData())
-        await dispatch(fetchUsers())
-        // await dispatch(fetchAllVisits())
-      } catch (error){
-        await dispatch(addAlert(error, 'error'))
-      }
-    }
-    fetchData()
-  }, [dispatch])
-
+  useEffect(
+    () => {
+      const fetchData = async () => {
+        try {
+          await dispatch(loadHospitalData());
+          await dispatch(fetchUsers());
+          await dispatch(fetchAllVisits())
+        } catch (error) {
+          await dispatch(addAlert(error, 'error'));
+        }
+      };
+      fetchData();
+    },
+    [ dispatch ]
+  );
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (validation()) {
-      await dispatch(addSingleVisit(mrn, {...formData, patient_mrn: parseInt(mrn)}));     
-      history.push(`visits/${formData.log_num}`)
+      await dispatch(addSingleVisit(mrn, { ...formData, patient_mrn: parseInt(mrn) }));
+      history.goBack();
     }
     handleReset();
   };
@@ -98,13 +109,22 @@ export default function VisitForm() {
 
   return (
     <Paper className={classes.pageContent}>
-
       <Toolbar>
         <Grid container>
           <Grid item>
             <Typography variant='h4' component='div'>
-              Add New Visit 
+              Add New Visit
             </Typography>
+            {visits && 
+            <Typography variant='body1' gutterBottom>
+              Current Log:{' '}
+              {visits[visits.length - 1].ped_log_num ? (
+                visits[visits.length - 1].log_num / visits[visits.length - 1].ped_log_num
+                ) : (
+                  visits[visits.length - 1].log_num
+                  )}
+            </Typography>
+                }
           </Grid>
           <Grid item xs />
           <Grid item>
@@ -114,7 +134,6 @@ export default function VisitForm() {
           </Grid>
         </Grid>
       </Toolbar>
-
 
       <Form onSubmit={handleSubmit}>
         <Grid container spacing={3}>
@@ -152,7 +171,7 @@ export default function VisitForm() {
               error={errors.physician_id}
             />
           </Grid>
-          
+
           <Grid item xs={12} sm={6} md={4}>
             <Select
               name='user_id'
@@ -163,7 +182,7 @@ export default function VisitForm() {
               error={errors.user_id}
             />
           </Grid>
-          
+
           <Grid item xs={12} sm={6} md={4}>
             <Select
               name='procedure_id'
@@ -196,7 +215,6 @@ export default function VisitForm() {
             />
           </Grid>
 
-
           <Grid item xs={12} sm={4} md={2}>
             <Button
               fullWidth
@@ -218,12 +236,8 @@ export default function VisitForm() {
               color='default'
             />
           </Grid>
-
-
         </Grid>
-
       </Form>
-      
     </Paper>
   );
 }

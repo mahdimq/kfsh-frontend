@@ -250,6 +250,8 @@ export default function Navbar() {
               </Link>
             </Box>
 
+            {/* {!loading && <p style={{color: "black"}}>{visits[visits.length-1].log_num}</p>} */}
+
             <Grid item className={classes.grow} />
 
             {/* DESKTOP SECTION */}

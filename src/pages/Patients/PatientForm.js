@@ -77,7 +77,7 @@ export default function PatientForm({ addOrEdit }) {
       
       handleReset();
       // addOrEdit(formData, handleReset)
-      history.push('/patients');
+      history.goBack();
     }
   };
 

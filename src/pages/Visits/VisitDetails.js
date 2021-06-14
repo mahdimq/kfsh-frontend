@@ -48,7 +48,7 @@ const detailHeadCells = [
 ];
 
 export default function VisitDetails() {
-  const [ state, setState ] = useState([]);
+  const [ state, setState ] = useState({ visits: [], visitDetails: [] });
   const classes = useStyles();
 
   const [ loading, setLoading ] = useState(true);
@@ -70,7 +70,9 @@ export default function VisitDetails() {
       // ]);
       const result = await kfshAPI.getVisits(mrn)
       // console.log('RESULT IN COMP: ', result);
-      setState(result);
+      setState({
+        visits: result
+      });
       // setState((prev) => ({
       // 	...prev,
       // 	rows:
@@ -89,7 +91,7 @@ export default function VisitDetails() {
   console.log('STATE: ', state);
 
   useEffect(() => {
-    fetchData(123456);
+    fetchData(109283);
   }, []);
 
   console.log('state: ', state);
@@ -101,7 +103,7 @@ export default function VisitDetails() {
       <TableContainer>
         <TableHeader />
 
-        {state.map((item) => (
+        {state.visits.map((item) => (
           <React.Fragment>
             <TableRow key={item.log_num}>
               <TableCell>
@@ -125,8 +127,6 @@ export default function VisitDetails() {
                 {item.user_firstname} {item.user_lastname}
               </TableCell>
               <TableCell>{item.location_name}</TableCell>
-              <TableCell>{item.p_firstname}</TableCell>
-              <TableCell>{item.p_lastname}</TableCell>
               <TableCell>{formatDate(item.visit_date)}</TableCell>
             </TableRow>
 
@@ -142,7 +142,7 @@ export default function VisitDetails() {
                       <TableDetailsHeader />
 
                       <TableBody>
-                        
+                        {state.visits.map((item) => (
                           <TableRow key={item.cpt}>
                             <TableCell component='th' scope='row'>
                               {item.cpt}
@@ -152,6 +152,7 @@ export default function VisitDetails() {
                             </TableCell>
                             <TableCell>{item.quantity}</TableCell>
                           </TableRow>
+                        ))}
                       </TableBody>
                     </TableContainer>
                   </Box>

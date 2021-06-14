@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { decode } from 'jsonwebtoken';
-import { getUserData } from './actions/actions';
+import { getUserData, fetchAllVisits } from './actions/actions';
 
 import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core';
 
@@ -10,7 +10,7 @@ import Alerts from './components/Alerts';
 import Routes from './components/Routes';
 import Spinner from './components/Spinner';
 import Navbar from './components/Navbar';
-
+import { useFetchHook } from './hooks/useFetch';
 
 const theme = createMuiTheme({
   palette: {
@@ -23,7 +23,7 @@ const theme = createMuiTheme({
       light: '#f8324526'
     },
     background: {
-      default: "#f4f5fd"
+      default: '#f4f5fd'
       // default: '#f4f5fd'
     }
   },
@@ -53,8 +53,9 @@ const useStyles = makeStyles({
 function App() {
   const [ infoLoaded, setInfoLoaded ] = useState(false);
   const dispatch = useDispatch();
-
-  console.log("INFOLOADED IN APP: ", infoLoaded)
+  const user = useSelector((state) => state.users);
+  // const [ loading ] = useFetchHook(fetchAllVisits());
+  const { visits } = useSelector((state) => state.patients);
 
   /*Check if user is logged in, load token from localstorage
     and save in state if available */
@@ -66,6 +67,7 @@ function App() {
           const { firstname, id, is_admin } = decode(token);
           // setUser({ firstname, id, is_admin, token });
           await dispatch(getUserData(token, firstname, id, is_admin));
+          await dispatch(fetchAllVisits())
         }
         setInfoLoaded(true);
       }
@@ -78,13 +80,16 @@ function App() {
     return <Spinner />;
   }
 
+
   return (
     <ThemeProvider theme={theme}>
-      <div>
-          <Navbar />
+      {/* {!loading && ( */}
+        <div>
+          <Navbar visits={visits} />
           <Alerts />
-          <Routes />
-      </div>
+          <Routes user={user} />
+        </div>
+      {/* )} */}
     </ThemeProvider>
   );
 }

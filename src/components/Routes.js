@@ -17,7 +17,7 @@ import Patient from '../pages/Patients/Patient';
 import ReportForms from '../pages/Hospital/ReportForms';
 import PatientForm from '../pages/Patients/PatientForm';
 
-function Routes() {
+function Routes({user}) {
   
   // const {users} = useSelector((state) => state.users);
   // const state = useSelector(state => state.hospital)
@@ -72,11 +72,11 @@ function Routes() {
       </Route>
 
       <Route exact path='/patients'>
-        <Patients />
+        <Patients/>
       </Route>
 
       <Route exact path='/patients/:mrn'>
-        <Patient/>
+        <Patient />
       </Route>
 
       <Route exact path='/visits'>
@@ -104,7 +104,7 @@ function Routes() {
       </Route>
 
       <Route exact path="/hospitaldata">
-        <Hospital/>
+        <Hospital user={user}/>
       </Route>
 
       <Redirect to='/' />

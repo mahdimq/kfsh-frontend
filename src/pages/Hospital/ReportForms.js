@@ -10,6 +10,8 @@ import Report from '../../components/Report';
 import Popup from '../../components/Popup';
 import { addAlert, loadHospitalData } from '../../actions/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import {useHistory} from 'react-router-dom'
+import Home from '../../components/Home'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -50,12 +52,14 @@ const initialValues = {
 export default function ReportForms() {
   const classes = useStyles();
   const dispatch = useDispatch();
+  const history = useHistory()
   const state = useSelector((state) => state.hospital);
   const [ byAge, setByAge ] = useState([]);
   const [ byDate, setByDate ] = useState([]);
   const [ byPhysician, setByPhysician ] = useState([]);
   const [ byDept, setByDept ] = useState([]);
   const [ openPopup, setOpenPopup ] = useState(false);
+  const user = useSelector(state => state.users)
 
   const [ openPopupType, setOpenPopupType ] = useState(null);
 
@@ -156,6 +160,18 @@ export default function ReportForms() {
   );
 
   const handleClose = () => (setOpenPopupType(null), setOpenPopup(false));
+
+  { if (!user.token) return <Home />}
+
+  {if (user.token && !user.is_admin) return (
+    <div style={{margin: '2em', textAlign: "center"}}>
+          <Typography variant='h4' component='div'>
+            Unauthorized. Admin privelages required!
+          </Typography>
+          <Button label="Home" onClick={() => history.push('/')} size="large" color="secondary" variant="contained" />
+        </div>
+  )}
+
 
   return (
     <div>

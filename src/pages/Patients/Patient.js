@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { LocalHospital, MenuBook, Add, ArrowBackIosOutlined } from '@material-ui/icons';
 import { Search } from '@material-ui/icons';
 import {
@@ -117,17 +117,6 @@ export default function Patient() {
     headCells,
     filterFunc
   );
-
-  // const handleSearch = (e) => {
-  //   const target = e.target;
-  //   setFilterFunc({
-  //     func: (items) => {
-  //       if (target.value === '') return items;
-  //       else return items.filter((x) => JSON.stringify(x.mrn).includes(target.value));
-  //     }
-  //   });
-  // };
-
   
   // useEffect(
   //   () => {
@@ -244,7 +233,7 @@ export default function Patient() {
               </Typography>
             </ListItem>
 
-            <Divider variant='inset' className={classes.divider} />
+            {/* <Divider variant='inset' className={classes.divider} />
 
             <ListItem className={classes.title}>
               <Card className={classes.pageIcon}>
@@ -254,7 +243,7 @@ export default function Patient() {
               <Typography className={classes.titleText} variant='h6' component='div'>
                 Running Log: 
               </Typography>
-            </ListItem>
+            </ListItem> */}
           </Grid>
 
           <Grid item sm={7}>
@@ -288,7 +277,6 @@ export default function Patient() {
               </Grid>
           </Toolbar>
 
-          <h4>Patient component</h4>
           <TableContainer>
             <TableHeader />
             <TableBody>

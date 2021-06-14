@@ -9,6 +9,7 @@ import TableRow from '@material-ui/core/TableRow';
 import { Paper, Typography, Grid, Toolbar } from '@material-ui/core';
 import { useSelector, useDispatch } from 'react-redux';
 import { loadHospitalData, addAlert } from '../../actions/actions';
+import {useHistory} from 'react-router-dom'
 import kfshAPI from '../../kfshAPI';
 import ActionButton from '../../hooks/controls/ActionButton';
 import { Add, Close } from '@material-ui/icons';
@@ -16,6 +17,7 @@ import ConfirmDialog from '../../components/ConfirmDialog';
 import Popup from '../../components/Popup';
 import Button from '../../hooks/controls/Button';
 import HospitalForm from './HospitalForm';
+import Home from '../../components/Home'
 import { v4 as uuid } from 'uuid';
 
 const useStyles = makeStyles((theme) => ({
@@ -56,8 +58,10 @@ export default function Hospital() {
   const classes = useStyles();
   const dispatch = useDispatch();
   const [ loading, setLoading ] = useState(true);
+  const history = useHistory()
 
   const [ openPopup, setOpenPopup ] = useState(false);
+  const user = useSelector(state => state.users)
 
   const { procedures, locations, departments, testCodes, physicians } = useSelector(
     (state) => state.hospital
@@ -128,6 +132,20 @@ export default function Hospital() {
     },
     [ dispatch ]
   );
+
+
+  { if (!user.token) return <Home />}
+
+  {if (user.token && !user.is_admin) return (
+    <div style={{margin: '2em', textAlign: "center"}}>
+          <Typography variant='h4' component='div'>
+            Unauthorized. Admin privelages required!
+          </Typography>
+          <Button label="Home" onClick={() => history.push('/')} size="large" color="secondary" variant="contained" />
+        </div>
+  )}
+
+
 
   return (
     !loading && (
