@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { addAlert, addVisitDetail } from '../../actions/actions';
+import { addAlert, addVisitDetail, loadHospitalData } from '../../actions/actions';
 
 import {
   Card,
@@ -87,15 +87,26 @@ export default function TestForm({ setOpenPopup, log }) {
       testData.forEach(async (item) => {
         await dispatch(addVisitDetail(log, item));
       });
-      dispatch(addAlert('Tests added successfully!, Please refresh to reflect changes', 'success'));
+      dispatch(
+        addAlert(
+          'Tests added successfully!, Please refresh to reflect changes',
+          'success'
+        )
+      );
     } catch (err) {
       dispatch(addAlert(err, 'error'));
     }
     handleReset();
     history.push(`/visits/${log}`);
-    console.log("LOG ", log)
     setOpenPopup(false);
   };
+
+  useEffect(() => {
+      const getTests = async () => {
+        await dispatch(loadHospitalData());
+      };
+      getTests();
+    },[ dispatch ]);
 
   return (
     <Paper className={classes.pageContent}>
@@ -122,7 +133,7 @@ export default function TestForm({ setOpenPopup, log }) {
               type='number'
               id='quantity'
               error={errors.quantity}
-              InputProps={{ inputProps: { min: 1, max:100 } }}
+              InputProps={{ inputProps: { min: 1, max: 100 } }}
               required
             />
           </Grid>

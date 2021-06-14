@@ -18,6 +18,7 @@ import Select from '../../hooks/controls/Select';
 import ActionButton from '../../hooks/controls/ActionButton';
 import { useParams } from 'react-router';
 import { Close } from '@material-ui/icons';
+import Spinner from '../../components/Spinner';
 
 const initialValues = {
   log_num: '',
@@ -43,7 +44,7 @@ export default function VisitForm() {
   const classes = useStyles();
   const { mrn } = useParams();
   const { users } = useSelector((state) => state.users);
-  const { procedures, physicians, departments, locations } = useSelector(
+  const { procedures, physicians, locations } = useSelector(
     (state) => state.hospital
   );
 
@@ -107,6 +108,7 @@ export default function VisitForm() {
 
   const handleClose = () => history.goBack();
 
+
   return (
     <Paper className={classes.pageContent}>
       <Toolbar>
@@ -115,16 +117,13 @@ export default function VisitForm() {
             <Typography variant='h4' component='div'>
               Add New Visit
             </Typography>
-            {visits && 
+
+      {visits && visits.length !== 0 ? (
             <Typography variant='body1' gutterBottom>
-              Current Log:{' '}
-              {visits[visits.length - 1].ped_log_num ? (
-                visits[visits.length - 1].log_num / visits[visits.length - 1].ped_log_num
-                ) : (
-                  visits[visits.length - 1].log_num
-                  )}
+              Current Log: {visits[visits.length-1].ped_log_num ? visits[visits.length-1].log_num +  ' / ' + visits[visits.length-1].ped_log_num : visits[visits.length-1].log_num}
             </Typography>
-                }
+            ) : <Spinner />
+}
           </Grid>
           <Grid item xs />
           <Grid item>

@@ -397,7 +397,6 @@ export default function Visit() {
                 </Grid>
           </Toolbar>
 
-            <h4> Visit Component</h4>
           <TableContainer>
             <TableHeader />
             <TableBody>

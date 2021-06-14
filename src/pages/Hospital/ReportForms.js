@@ -58,6 +58,7 @@ export default function ReportForms() {
   const [ byDate, setByDate ] = useState([]);
   const [ byPhysician, setByPhysician ] = useState([]);
   const [ byDept, setByDept ] = useState([]);
+  const [ byCpt, setByCpt ] = useState([]);
   const [ openPopup, setOpenPopup ] = useState(false);
   const user = useSelector(state => state.users)
 
@@ -144,6 +145,25 @@ export default function ReportForms() {
 
     setOpenPopupType('physician');
   };
+
+  const handleByCpt = async (e) => {
+    e.preventDefault();
+    // if (validation()) {
+    try {
+      const report = await kfshAPI.getByCpt(formData);
+      setByCpt(report);
+    } catch (err) {
+      await setErrors(err);
+    }
+    // }
+    handleReset();
+    setOpenPopup(true);
+
+    setOpenPopupType('cpt');
+  };
+
+
+  console.log("CPT DATA IN REPORTS: ", byCpt)
 
   useEffect(
     () => {
@@ -265,6 +285,16 @@ export default function ReportForms() {
                 variant='contained'
                 onClick={handleByDept}
                 color='default'
+              />
+            </Grid>
+            <Grid item xs={12} sm={6} md={3}>
+              <Button
+                fullWidth
+                size='large'
+                label='Tests Done'
+                variant='contained'
+                onClick={handleByCpt}
+                color='primary'
               />
             </Grid>
           </Grid>
@@ -422,6 +452,12 @@ export default function ReportForms() {
       {openPopupType === 'date' && (
         <Popup openPopup={openPopup} handleClose={handleClose}>
           <Report data={byDate} title='NPL Department Records by Date' />
+        </Popup>
+      )}
+
+      {openPopupType === 'cpt' && (
+        <Popup openPopup={openPopup} handleClose={handleClose}>
+          <Report data={byCpt} title='NPL Department Records by Tests' />
         </Popup>
       )}
     </div>

@@ -268,6 +268,12 @@ class kfshAPI {
     return result;
   }
 
+  // GET TEST QUANTITY REPORTS 
+  static async getByCpt(data) {
+    const result = await this.request(`queries/tests`,data);
+    return result;
+  }
+
   // ########################################################
   // ##################### TEST ENDPOINTS ###################
   // ########################################################

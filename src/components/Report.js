@@ -84,6 +84,8 @@ export default function Report({ data, title, other = '' }) {
                   {d.technologist && <TableCell>{d.technologist}</TableCell>}
                   {d.department && <TableCell>{d.department}</TableCell>}
                   {d.physician && <TableCell>{d.physician}</TableCell>}
+                  {d.cpt && <TableCell>{d.cpt}</TableCell>}
+                  {d.description && <TableCell>{d.description}</TableCell>}
                   {d.count && <TableCell>{d.count}</TableCell>}
                 </TableRow>
               ))}
